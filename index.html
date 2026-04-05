@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pellarhodon</title>
+    <title>Pellarhodon // Terminal</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
@@ -15,45 +15,40 @@
             display: flex; flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* POMALÝ A NENÁPADNÝ NADPIS */
-        .header { margin-top: 10vh; text-align: center; }
+        .header { margin-top: 8vh; text-align: center; }
         h1 {
             font-size: clamp(30px, 8vw, 75px); 
             letter-spacing: 15px; 
-            color: #1a0000; /* Základní velmi tmavá barva */
+            color: #1a0000;
             text-transform: uppercase;
-            /* Prodlouženo na 8 sekund pro maximální plynulost */
             animation: slowPulse 8s ease-in-out infinite;
             margin: 0;
             user-select: none;
         }
 
         @keyframes slowPulse {
-            0%, 100% { 
-                color: #1a0000; 
-                text-shadow: 0 0 5px rgba(0,0,0,0); 
-            }
-            50% { 
-                color: #660000; /* Jen jemné rozsvícení, ne úplně rudá */
-                text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); 
-            }
+            0%, 100% { color: #1a0000; text-shadow: 0 0 5px rgba(0,0,0,0); }
+            50% { color: #770000; text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); }
         }
 
-        /* ZBYTEK LAYOUTU */
+        /* SPODNÍ SEKCE */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
 
+        /* ZVĚTŠENÉ PÍSMO A INTERAKTIVITA */
         .interactive-node {
-            opacity: 0.3; /* Ještě o něco bledší v základu */
+            opacity: 0.35;
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
         .interactive-node:hover {
@@ -61,22 +56,23 @@
             transform: scale(1.01);
         }
 
-        .r6-banner {
-            width: 500px; height: 70px; border: none;
-            filter: grayscale(0.8) brightness(0.6);
-            transition: filter 0.6s;
-        }
-        .r6-banner:hover { filter: grayscale(0) brightness(1); }
-
         .terminal-info { text-align: center; }
-        .line { font-size: 11px; text-transform: uppercase; margin: 5px 0; letter-spacing: 2px; }
+        
+        .line { 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            margin: 10px 0; 
+            letter-spacing: 2px; 
+        }
+        
         .label { color: #440000; }
-        .value { color: #880000; font-weight: bold; }
+        .value { color: #aa0000; font-weight: bold; }
+        .separator { color: #220000; margin: 0 10px; }
         
         #spotify-box { 
-            margin: 10px 0; 
-            border-left: 2px solid #1a0000; 
-            padding-left: 15px; 
+            margin: 15px 0; 
+            border-left: 3px solid #1a0000; 
+            padding-left: 20px; 
             text-align: left;
             transition: border-color 0.6s;
         }
@@ -85,9 +81,16 @@
         .cursor { animation: blink 1.2s step-end infinite; color: #550000; }
         @keyframes blink { 50% { opacity: 0; } }
 
+        .r6-banner {
+            width: 500px; height: 70px; border: none;
+            filter: grayscale(0.8) brightness(0.6);
+            transition: filter 0.6s;
+        }
+        .r6-banner:hover { filter: grayscale(0) brightness(1); }
+
         .wigle-frame img { 
             border: 0; 
-            max-width: 180px;
+            max-width: 190px;
             filter: grayscale(1) brightness(0.3);
             transition: filter 0.8s;
         }
@@ -114,8 +117,17 @@
             </div>
 
             <div class="line">
+                <span class="label">[STEAM_DB_CALC]:</span> 
+                VAL: <span class="value">1927€</span> 
+                <span class="separator">//</span> 
+                GAMES: <span class="value">269</span> 
+                <span class="separator">//</span> 
+                PLAYED: <span class="value">222 (82%)</span>
+            </div>
+
+            <div class="line">
                 <span class="label">[SYSTEM_INFO]:</span> 
-                STEAM_VAL: <span class="value">1927€</span> 
+                TOTAL_TIME: <span class="value">7,240H</span> 
                 <span class="separator">//</span> 
                 UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span>
                 <span class="cursor">_</span>
