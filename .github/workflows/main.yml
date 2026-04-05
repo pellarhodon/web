@@ -2,20 +2,20 @@ name: Update R6 Stats
 
 on:
   schedule:
-    - cron: '0 * * * *' # Spustí se automaticky každou hodinu
-  workflow_dispatch: # Umožní ti spustit bota ručně tlačítkem
+    - cron: '0 * * * *' # Spustí se každou hodinu
+  workflow_dispatch: # Umožní ti spustit bota ručně
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Důležité: dává botovi právo zapisovat do tvého index.html
+      contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Aktualizováno z v3 na v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Aktualizováno z v4 na v5
         with:
           python-version: '3.x'
 
