@@ -6,6 +6,16 @@
     <title>Pellarhodon</title>
 
     <link rel="icon" type="image/png" href="/favicon.png?v=2">
+
+    <div class="r6-container">
+    <iframe 
+        src="https://stats.cc/siege/Pellarhodon/0044ba7a-924b-450e-b4ab-f0ba9954fe86/widget?showKd=1&showHsRate=1&showWinLoss=1&showSessionDuration=1" 
+        width="300" 
+        height="150" 
+        frameborder="0" 
+        scrolling="no">
+    </iframe>
+    </div>
     
     <style>
         /* 1. ABSOLUTNÍ MINIMALISMUS POZADÍ */
@@ -101,6 +111,27 @@
     .wigle-banner {
         bottom: 20px;
     }
+}
+
+    .r6-container {
+    margin-top: 40px; /* Mezera pod tvým jménem */
+    opacity: 0.3; /* Velmi tiché, skoro neviditelné */
+    filter: grayscale(100%) contrast(120%); /* Odstraní barvy, aby to ladilo s černou a rudou */
+    transition: all 0.6s ease;
+    display: flex;
+    justify-content: center;
+}
+
+.r6-container:hover {
+    opacity: 0.9; /* Při najetí myší se stats rozsvítí */
+    filter: grayscale(0%) contrast(100%);
+    transform: scale(1.02); /* Mírné zvětšení pro interaktivitu */
+}
+
+/* Skrytí okrajů iframe, aby to působilo čistě */
+iframe {
+    border-radius: 8px;
+    border: 1px solid #1a0000; /* Velmi temně rudý rámeček */
 }
         
     </style>
