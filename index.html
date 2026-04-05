@@ -4,61 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon</title>
-    
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="shortcut icon" type="image/png" href="favicon.png">
-
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000000;
+            background-color: #000; color: #cc0000;
             display: flex; flex-direction: column; align-items: center;
-            overflow: hidden; font-family: 'Inter', sans-serif;
+            font-family: monospace; overflow: hidden;
         }
 
-        .header { margin-top: 10vh; text-align: center; z-index: 10; }
+        .header { margin-top: 15vh; text-align: center; }
         h1 {
-            color: #550000; font-size: clamp(40px, 10vw, 90px); font-weight: 900;
-            text-transform: uppercase; letter-spacing: 0.3em; margin: 0;
-            animation: pulse 8s ease-in-out infinite; user-select: none;
+            font-size: clamp(40px, 10vw, 80px); letter-spacing: 0.3em;
+            text-transform: uppercase; margin: 0; color: #440000;
+            animation: pulse 5s infinite;
         }
-
-        @keyframes pulse { 0%, 100% { color: #330000; } 50% { color: #880000; } }
+        @keyframes pulse { 50% { color: #990000; } }
 
         .footer {
-            position: absolute; bottom: 20px; width: 100%;
+            position: absolute; bottom: 30px; width: 100%;
             display: flex; flex-direction: column; align-items: center; gap: 15px;
         }
 
-        .stat-item {
-            opacity: 0.5; filter: grayscale(100%) contrast(1.2);
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        /* CUSTOM SYSTÉMOVÉ KARTY (Místo rozbitých obrázků) */
+        .sys-card {
+            width: 320px; padding: 12px;
+            border: 1px solid #330000; background: #050505;
+            border-radius: 4px; text-decoration: none;
+            display: flex; align-items: center; gap: 15px;
+            transition: 0.3s; opacity: 0.6;
         }
+        .sys-card:hover { opacity: 1; border-color: #ff0000; transform: translateY(-2px); }
 
-        .stat-item:hover { opacity: 1; filter: grayscale(0%); transform: scale(1.02); }
+        .sys-card img { width: 40px; height: 40px; border-radius: 4px; border: 1px solid #440000; }
+        .sys-info { display: flex; flex-direction: column; }
+        .sys-label { font-size: 10px; color: #660000; margin-bottom: 2px; }
+        .sys-value { font-size: 13px; color: #ff0000; font-weight: bold; }
 
-        /* Sjednocení rámečků */
-        .widget-img {
-            border-radius: 6px;
-            border: 1px solid #220000;
-            background: #050505;
-        }
+        .system-log { font-size: 10px; letter-spacing: 1px; opacity: 0.5; margin-top: 10px; }
+        .value { color: #ff0000; }
 
-        .system-container { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-top: 5px; }
-        .system-log {
-            color: #880000; font-family: monospace; font-size: 11px;
-            letter-spacing: 2px; text-transform: uppercase;
-            font-weight: bold; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
-        }
-
-        .system-log a { color: #880000; text-decoration: none; transition: 0.3s; }
-        .system-log a:hover { color: #ff0000; }
-        .system-log .value { color: #cc0000; }
-
-        @media (max-width: 768px) {
-            .system-log { font-size: 9px; flex-direction: column; gap: 4px; text-align: center; }
-            .widget-img { width: 90vw; height: auto; }
-        }
+        @media (max-width: 600px) { .sys-card { width: 80%; } }
     </style>
 </head>
 <body>
@@ -69,51 +54,43 @@
 
     <div class="footer">
         
-        <div class="stat-item">
-            <a href="https://r6.tracker.network/profile/pc/Pellarhodon" target="_blank">
-                <img src="https://r6.tracker.network/r6stats/p/Pellarhodon?style=dark&platform=pc" class="widget-img" height="100" alt="R6 Stats">
-            </a>
-        </div>
-
-        <div class="stat-item">
-            <a href="https://stats.fm/31t4msdnvfenngbqcadme5oygj3q" target="_blank">
-                <img src="https://statsfm-cards.vercel.app/api/now-playing?id=31t4msdnvfenngbqcadme5oygj3q&theme=dark" class="widget-img" height="80" alt="Spotify">
-            </a>
-        </div>
-
-        <div class="stat-item">
-            <a href="https://wigle.net" target="_blank">
-                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" class="widget-img" height="35">
-            </a>
-        </div>
-
-        <div class="system-container">
-            <div class="system-log">
-                <a href="https://steamdb.info/calculator/76561198009042620/?cc=eu" target="_blank">
-                    STEAM_NET: <span class="value">1927€</span> // GAMES: <span class="value">269</span> // PLAYTIME: <span class="value">7,240H</span>
-                </a>
-                <span>//</span>
-                <div id="uptime-log">UPTIME: SYNC...</div>
+        <a href="https://r6.tracker.network/profile/pc/Pellarhodon" target="_blank" class="sys-card">
+            <img src="https://trackercdn.com/cdn/r6.tracker.network/operators/badges/ash.png" alt="R6">
+            <div class="sys-info">
+                <span class="sys-label">DATABASE_ACCESS: R6_SIEGE</span>
+                <span class="sys-value">LEVEL 373 // RANK: GOLD</span>
             </div>
+        </a>
+
+        <a href="https://stats.fm/31t4msdnvfenngbqcadme5oygj3q" target="_blank" class="sys-card">
+            <img src="https://pub-static.freetls.fastly.net/statsfm/images/logo.png" alt="Spotify">
+            <div class="sys-info">
+                <span class="sys-label">STREAM_FEED: STATS.FM_PRO</span>
+                <span class="sys-value">LIVE_PLAYBACK_ACTIVE</span>
+            </div>
+        </a>
+
+        <a href="https://wigle.net" target="_blank" style="opacity:0.4; filter:grayscale(1);">
+            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" height="30" alt="WiGLE">
+        </a>
+
+        <div class="system-log">
+            STEAM_VAL: <span class="value">1927€</span> // UPTIME: <span id="uptime">SYNC...</span>
         </div>
 
     </div>
 
     <script>
-        // UPTIME LOGIC
         const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
-        function updateUptime() {
+        setInterval(() => {
             const now = new Date().getTime();
             const diff = now - start;
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-            const log = document.getElementById('uptime-log');
-            if(log) { log.innerText = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`; }
-        }
-        setInterval(updateUptime, 1000);
-        updateUptime();
+            document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
+        }, 1000);
     </script>
 </body>
 </html>
