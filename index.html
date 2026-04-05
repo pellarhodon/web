@@ -3,110 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pellarhodon</title>
+    <title>Pellarhodon // OS</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #ff0000;
+            background-color: #000; color: #cc0000;
             display: flex; flex-direction: column; align-items: center;
-            font-family: 'Courier New', Courier, monospace; overflow: hidden;
+            font-family: 'Courier New', monospace; overflow: hidden;
         }
 
         .header { margin-top: 15vh; text-align: center; }
         h1 {
-            font-size: clamp(40px, 10vw, 80px); letter-spacing: 0.3em;
-            text-transform: uppercase; margin: 0; color: #440000;
-            animation: pulse 5s infinite;
-        }
-        @keyframes pulse { 50% { color: #ff0000; text-shadow: 0 0 20px #ff0000; } }
-
-        .container {
-            position: absolute; bottom: 40px; width: 90%;
-            display: flex; flex-direction: column; gap: 10px;
-            border-top: 1px solid #330000; padding-top: 20px;
+            font-size: clamp(30px, 8vw, 70px); letter-spacing: 0.4em;
+            text-transform: uppercase; margin: 0; color: #330000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
         }
 
-        .log-line {
-            font-size: 12px; line-height: 1.6; text-transform: uppercase;
-            display: flex; flex-wrap: wrap; gap: 10px;
+        .terminal {
+            position: absolute; bottom: 40px; width: 90%; max-width: 800px;
+            border-top: 1px solid #220000; padding-top: 20px;
         }
 
-        .label { color: #660000; }
+        .line { font-size: 11px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .label { color: #550000; margin-right: 10px; }
         .value { color: #ff0000; font-weight: bold; }
-        .separator { color: #330000; }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
 
-        #spotify-status { border: 1px solid #220000; padding: 5px 10px; background: #050505; }
+        #spotify-box { border-left: 2px solid #ff0000; padding-left: 15px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Pellarhodon</h1>
+        <h1>PELLARHODON</h1>
     </div>
 
-    <div class="container">
-        <div class="log-line">
-            <span class="label">[R6_OPERATOR]</span>
-            <span class="value">LVL_373</span>
-            <span class="separator">//</span>
-            <span class="label">RANK</span>
-            <span class="value">GOLD_II</span>
-            <span class="separator">//</span>
-            <span class="label">REGION</span>
-            <span class="value">EU_CENTRAL</span>
+    <div class="terminal">
+        <div class="line">
+            <span class="label">[ACTIVITY_MONITOR]:</span>
+            <span id="discord-activity" class="value">SCANNING...</span>
         </div>
 
-        <div class="log-line" id="spotify-status">
-            <span class="label">[STREAMING]</span>
-            <span id="track-info" class="value">SYNCING_WITH_STATS.FM...</span>
+        <div id="spotify-box">
+            <div class="line">
+                <span class="label">STREAM_ID:</span>
+                <span id="track-name" class="value">IDLE</span>
+            </div>
+            <div class="line">
+                <span class="label">SOURCE_STATION:</span>
+                <span id="track-artist" class="value">OFFLINE</span>
+            </div>
         </div>
 
-        <div class="log-line">
-            <span class="label">[SYSTEM]</span>
-            <span>STEAM_VAL: <span class="value">1927€</span></span>
-            <span class="separator">//</span>
-            <span>UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span></span>
-            <span class="separator">//</span>
-            <span class="label">STATUS</span>
-            <span class="value">ONLINE</span>
+        <div class="line">
+            <span class="label">[SYSTEM_LOG]:</span>
+            <span>LVL_373 // STEAM_VAL: <span class="value">1927€</span> // UPTIME: <span id="uptime" class="value">00:00:00</span> <span class="blink">_</span></span>
         </div>
     </div>
 
     <script>
-        // --- ŽIVÁ DATA ZE SPOTIFY (Přes Stats.fm API) ---
-        async function updateSpotify() {
+        // TVÉ DISCORD ID (Tady ho musíš mít pro Lanyard)
+        const DISCORD_ID = "215886367803604992"; // Zkontroluj si své ID v Discordu!
+
+        async function getLanyard() {
             try {
-                // Používáme tvoje ID, které jsi poslal
-                const res = await fetch('https://api.stats.fm/api/v1/users/31t4msdnvfenngbqcadme5oygj3q/currently-playing');
-                const data = await res.json();
+                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                const { data } = await res.json();
+
+                // 1. SPOTIFY LOGIC
+                const track = document.getElementById('track-name');
+                const artist = document.getElementById('track-artist');
                 
-                const trackElement = document.getElementById('track-info');
-                if (data && data.item) {
-                    trackElement.innerText = `${data.item.track.name.toUpperCase()} — ${data.item.track.artists[0].name.toUpperCase()}`;
+                if (data.listening_to_spotify && data.spotify) {
+                    track.innerText = data.spotify.song.toUpperCase();
+                    artist.innerText = data.spotify.artist.toUpperCase();
                 } else {
-                    trackElement.innerText = "NOTHING_PLAYING";
+                    track.innerText = "NO_AUDIO_DETECTED";
+                    artist.innerText = "STATION_SLEEPING";
                 }
+
+                // 2. ACTIVITY LOGIC (Hry jako R6)
+                const activity = document.getElementById('discord-activity');
+                const r6 = data.activities.find(a => a.name === "Tom Clancy's Rainbow Six Siege" || a.type === 0);
+                
+                if (r6) {
+                    activity.innerText = `${r6.name.toUpperCase()} // ${r6.details || 'IN_GAME'}`;
+                } else {
+                    activity.innerText = "NO_ACTIVE_PROCESS";
+                }
+
             } catch (e) {
-                document.getElementById('track-info').innerText = "STATS.FM_CONNECTED";
+                console.error("Lanyard error");
             }
         }
 
-        // --- UPTIME ---
-        const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
-        function updateUptime() {
+        // UPTIME
+        const start = new Date(2025, 0, 1).getTime();
+        setInterval(() => {
             const now = new Date().getTime();
             const diff = now - start;
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
-        }
+            document.getElementById('uptime').innerText = `${d}D:${h}H:${m}M:${s}S`;
+        }, 1000);
 
-        setInterval(updateSpotify, 10000); // Každých 10s kontrola Spotify
-        setInterval(updateUptime, 1000);
-        updateSpotify();
-        updateUptime();
+        setInterval(getLanyard, 5000); // Kontrola každých 5s
+        getLanyard();
     </script>
 </body>
 </html>
