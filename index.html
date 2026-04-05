@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon // Terminal</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" href="https://avatars.ubisoft.com/0044ba7a-924b-450e-b4ab-f0ba9954fe86/default_146_146.png">
     
     <style>
         * { box-sizing: border-box; }
@@ -13,28 +13,36 @@
             background-color: #000; color: #cc0000;
             font-family: 'Courier New', Courier, monospace;
             display: flex; flex-direction: column;
-            justify-content: space-between; /* Nadpis nahoru, zbytek dolů */
+            justify-content: space-between;
             align-items: center;
             overflow: hidden;
         }
 
-        /* PULZUJÍCÍ NADPIS NAHOŘE */
+        /* POMALÝ A NENÁPADNÝ NADPIS */
         .header { margin-top: 10vh; text-align: center; }
         h1 {
             font-size: clamp(30px, 8vw, 75px); 
             letter-spacing: 15px; 
-            color: #330000; 
+            color: #1a0000; /* Základní velmi tmavá barva */
             text-transform: uppercase;
-            animation: pulse 4s ease-in-out infinite;
+            /* Prodlouženo na 8 sekund pro maximální plynulost */
+            animation: slowPulse 8s ease-in-out infinite;
             margin: 0;
             user-select: none;
         }
-        @keyframes pulse {
-            0%, 100% { color: #220000; text-shadow: 0 0 5px rgba(0,0,0,0); }
-            50% { color: #cc0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+
+        @keyframes slowPulse {
+            0%, 100% { 
+                color: #1a0000; 
+                text-shadow: 0 0 5px rgba(0,0,0,0); 
+            }
+            50% { 
+                color: #660000; /* Jen jemné rozsvícení, ne úplně rudá */
+                text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); 
+            }
         }
 
-        /* SPODNÍ SEKCE */
+        /* ZBYTEK LAYOUTU */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
@@ -44,50 +52,46 @@
             gap: 20px;
         }
 
-        /* EFEKT ZŘETELNOSTI PO NAJETÍ MYŠÍ */
         .interactive-node {
-            opacity: 0.4;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0.3; /* Ještě o něco bledší v základu */
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
         .interactive-node:hover {
             opacity: 1;
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
-        /* R6 WIDGET */
         .r6-banner {
             width: 500px; height: 70px; border: none;
-            filter: grayscale(0.5) brightness(0.7);
-            transition: filter 0.3s;
+            filter: grayscale(0.8) brightness(0.6);
+            transition: filter 0.6s;
         }
         .r6-banner:hover { filter: grayscale(0) brightness(1); }
 
         .terminal-info { text-align: center; }
         .line { font-size: 11px; text-transform: uppercase; margin: 5px 0; letter-spacing: 2px; }
-        .label { color: #550000; }
-        .value { color: #ff0000; font-weight: bold; }
-        .separator { color: #220000; margin: 0 8px; }
+        .label { color: #440000; }
+        .value { color: #880000; font-weight: bold; }
         
         #spotify-box { 
             margin: 10px 0; 
-            border-left: 2px solid #220000; 
+            border-left: 2px solid #1a0000; 
             padding-left: 15px; 
             text-align: left;
-            transition: border-color 0.3s;
+            transition: border-color 0.6s;
         }
         #spotify-box:hover { border-left-color: #cc0000; }
 
-        .cursor { animation: blink 1s step-end infinite; color: #ff0000; }
+        .cursor { animation: blink 1.2s step-end infinite; color: #550000; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* WIGLE BANNER */
         .wigle-frame img { 
             border: 0; 
-            max-width: 200px;
-            filter: grayscale(1) brightness(0.5);
-            transition: filter 0.3s;
+            max-width: 180px;
+            filter: grayscale(1) brightness(0.3);
+            transition: filter 0.8s;
         }
-        .wigle-frame:hover img { filter: grayscale(0) brightness(1); }
+        .wigle-frame:hover img { filter: grayscale(0) brightness(0.8); }
 
         a { text-decoration: none; color: inherit; }
     </style>
