@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon // Terminal</title>
-    
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
+        /* IMPORT FONTS */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
         * { box-sizing: border-box; }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -20,7 +22,7 @@
             overflow-y: auto;
         }
 
-        /* NENÁPADNÝ PULZUJÍCÍ NADPIS */
+        /* HEADER */
         .header { margin-top: 8vh; text-align: center; }
         h1 {
             font-size: clamp(30px, 8vw, 75px); 
@@ -37,7 +39,6 @@
             50% { color: #770000; text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); }
         }
 
-        /* SPODNÍ KONTEJNER PRO INFO */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
@@ -47,7 +48,6 @@
             gap: 25px;
         }
 
-        /* INTERAKTIVNÍ PRVKY (ZTMALÉ V KLIDU, ROZSVÍCENÉ PŘI HOVERU) */
         .interactive-node {
             opacity: 0.35;
             transition: opacity 0.6s ease, transform 0.6s ease;
@@ -57,33 +57,25 @@
             transform: scale(1.01);
         }
 
-        /* R6 BROWSER SOURCE WRAPPER (OŘEZ) */
-        .r6-wrapper {
-            width: 500px; 
-            height: 70px; 
-            overflow: hidden; 
-            position: relative; 
+        /* R6 OVERLAY INTEGRATION */
+        .r6-container {
+            width: 420px;
+            height: 80px;
             border: 1px solid #1a0000;
-        }
-        .r6-iframe {
-            width: 1000px; 
-            height: 600px; 
-            border: none; 
-            position: absolute; 
-            top: -140px; /* Posun pro vycentrování banneru */
-            left: -250px; /* Skrytí levého panelu editoru */
-            pointer-events: none;
+            overflow: hidden;
+            border-radius: 8px;
+            background: rgba(17,17,17,0.95);
             filter: grayscale(0.8) brightness(0.6);
             transition: filter 0.6s;
         }
-        .interactive-node:hover .r6-iframe {
+        .interactive-node:hover .r6-container {
             filter: grayscale(0) brightness(1);
         }
 
-        /* TERMINÁLOVÉ STATISTIKY */
+        /* TERMINAL TEXTS */
         .terminal-info { text-align: center; }
         .line { 
-            font-size: 14px; /* ZVĚTŠENÉ PÍSMO */
+            font-size: 14px; 
             text-transform: uppercase; 
             margin: 12px 0; 
             letter-spacing: 2px; 
@@ -93,7 +85,6 @@
         .value { color: #aa0000; font-weight: bold; }
         .separator { color: #220000; margin: 0 10px; }
         
-        /* SPOTIFY BOX */
         #spotify-box { 
             margin: 15px 0; 
             border-left: 3px solid #1a0000; 
@@ -106,7 +97,6 @@
         .cursor { animation: blink 1.2s step-end infinite; color: #550000; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* WiGLE BANNER */
         .wigle-frame img { 
             border: 0; 
             max-width: 190px;
@@ -116,6 +106,15 @@
         .wigle-frame:hover img { filter: grayscale(0) brightness(0.8); }
 
         a { text-decoration: none; color: inherit; }
+
+        /* R6 INTERNAL STYLES FROM YOUR CODE */
+        .r6-internal {
+            width: 100%; height: 100%; display: flex; color: #fff; font-family: 'Inter', sans-serif;
+        }
+        .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+        .stat-label { font-size: 12px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .stat-val { font-size: 22px; font-weight: 800; }
+        .stat-val.primary { color: #e53935; }
     </style>
 </head>
 <body>
@@ -127,12 +126,18 @@
     <div class="footer">
         
         <div class="interactive-node">
-            <div class="r6-wrapper">
-                <iframe 
-                    class="r6-iframe" 
-                    src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6MTAwLCJibHVyIjoyMCwicHJpbWFyeSI6IiNlNTM5MzUiLCJhY2NlbnQiOiIjOGU0NGFkIiwidGV4dCI6IiNmZmZmZmYiLCJmb250RmFtaWx5IjoiSW50ZXIiLCJzdGF0c1NpemUiOjIyLCJ1c2VDdXN0b21Db2xvcnMiOmZhbHNlfSwibGF5b3V0Ijp7InR5cGUiOiJiYW5uZXIiLCJ3aWR0aCI6NTAwLCJoZWlnaHQiOjcwLCJib3JkZXJSYWRpdXMiOjAsInBhZGRpbmciOjE2LCJhbGlnbm1lbnQiOiJsZWZ0Iiwic2hvd0JyYW5kaW5nIjpmYWxzZSwicmVmcmVzaEludGVydmFsIjo2fX0sInBsYXllcnMiOnsic2luZ2xlIjp7InVzZXJuYW1lIjoiUGVsbGFyaG9kb24iLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6eyJhY2NvdW50SW5mbyI6eyJsZXZlbCI6MzczLCJ4cCI6MCwicHJvZmlsZVBpY3R1cmUiOiJodHRwczovL2F2YXRhcnMudWJpc29mdC5jb20vMDA0NGJhN2EtOTI0Yi00NTBlLWI0YWItZjBiYTk5NTRmZTg2L2RlZmF1bHRfMTQ2XzE0Ni5wbmciLCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2BoardF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2BoardF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MTMsImRlYXRocyI6NTgzLCJ3aW5zIjoxMDMsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo2LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgxMywiZGVhdGhzIjo1ODMsIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMywibG9zc2VzIjoxMjgsImFiYW5kb25zIjo2fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19fQ=="
-                    scrolling="no">
-                </iframe>
+            <div class="r6-container">
+                <div class="r6-internal">
+                    <div style="background: linear-gradient(180deg, #e53935 0%, rgba(0,0,0,0.5) 150%); display:flex; align-items:center; justify-content:center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.1);">
+                        <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-4.webp" alt="Rank" style="height: 56px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                    </div>
+                    <div style="flex:1; display:flex; align-items:center; justify-content: space-around; padding: 0 12px;">
+                        <div class="stat-group"><div class="stat-label">RP</div><div class="stat-val">1 150</div></div>
+                        <div class="stat-group"><div class="stat-label">K/D</div><div class="stat-val primary">0.92</div></div>
+                        <div class="stat-group"><div class="stat-label">W/L</div><div class="stat-val">2-1</div></div>
+                        <div class="stat-group"><div class="stat-label">LVL</div><div class="stat-val">373</div></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -167,7 +172,6 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
-        // Datum začátku pro uptime (můžeš si upravit)
         const START_DATE = new Date(2025, 0, 1).getTime();
 
         async function fetchLanyard() {
@@ -181,7 +185,7 @@
                     document.getElementById('track-name').innerText = "STATION_IDLE";
                     document.getElementById('track-artist').innerText = "NO_AUDIO_FEED";
                 }
-            } catch (e) { console.log("Lanyard service unavailable"); }
+            } catch (e) { console.log("Lanyard error"); }
         }
 
         function updateUptime() {
@@ -196,8 +200,7 @@
 
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
-        fetchLanyard(); 
-        updateUptime();
+        fetchLanyard(); updateUptime();
     </script>
 </body>
 </html>
