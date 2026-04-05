@@ -36,7 +36,6 @@
             50% { color: #770000; text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); }
         }
 
-        /* SPODNÍ SEKCE */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
@@ -46,7 +45,6 @@
             gap: 25px;
         }
 
-        /* ZVĚTŠENÉ PÍSMO A INTERAKTIVITA */
         .interactive-node {
             opacity: 0.35;
             transition: opacity 0.6s ease, transform 0.6s ease;
@@ -56,8 +54,23 @@
             transform: scale(1.01);
         }
 
+        /* OPRAVENÝ R6 IFRAME */
+        .r6-container {
+            width: 500px; 
+            height: 70px; 
+            overflow: hidden;
+            position: relative;
+        }
+        .r6-banner {
+            width: 500px; 
+            height: 70px; 
+            border: none;
+            filter: grayscale(0.8) brightness(0.6);
+            transition: filter 0.6s;
+        }
+        .interactive-node:hover .r6-banner { filter: grayscale(0) brightness(1); }
+
         .terminal-info { text-align: center; }
-        
         .line { 
             font-size: 14px; 
             text-transform: uppercase; 
@@ -81,13 +94,6 @@
         .cursor { animation: blink 1.2s step-end infinite; color: #550000; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        .r6-banner {
-            width: 500px; height: 70px; border: none;
-            filter: grayscale(0.8) brightness(0.6);
-            transition: filter 0.6s;
-        }
-        .r6-banner:hover { filter: grayscale(0) brightness(1); }
-
         .wigle-frame img { 
             border: 0; 
             max-width: 190px;
@@ -107,7 +113,9 @@
 
     <div class="footer">
         <div class="interactive-node">
-            <iframe class="r6-banner" src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNCwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYmFubmVyIiwid2lkdGgiOjUwMCwiaGVpZ2h0Ijo3MCwiYm9yZGVyUmFkaXVzIjowLCJwYWRkaW5nIjoxNiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2BoardF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2BoardF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19"></iframe>
+            <div class="r6-container">
+                <iframe class="r6-banner" src="https://r6data.eu/widget/pellarhodon?theme=r6-red&layout=banner&width=500&height=70"></iframe>
+            </div>
         </div>
 
         <div class="terminal-info interactive-node">
