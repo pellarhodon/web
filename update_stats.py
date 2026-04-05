@@ -1,53 +1,66 @@
 import requests
 import re
 
-# KONFIGURACE
+# KONFIGURACE - Zkusíme tohle API, je teď stabilnější
 USERNAME = "Pellarhodon"
 URL = f"https://r6.apitab.com/search/uplay/{USERNAME}"
 
 def update_html():
     try:
-        # 1. Získání dat z R6Tab API
-        print(f"Connecting to R6 database for {USERNAME}...")
-        response = requests.get(URL, timeout=10)
+        print(f"Checking database for: {USERNAME}...")
+        response = requests.get(URL, timeout=15)
         data = response.json()
         
-        if not data or "players" not in data:
-            print("Player not found in database.")
+        if not data or "players" not in data or not data["players"]:
+            print("CRITICAL: Player not found in R6Tab database!")
             return
 
-        # Výběr prvního nalezeného hráče
-        player_id = list(data["players"].keys())[0]
-        player = data["players"][player_id]
+        # Vytáhneme první shodu
+        pid = list(data["players"].keys())[0]
+        player = data["players"][pid]
         
-        # 2. Extrakce konkrétních hodnot
-        stats = {
-            "r6-lvl": str(player["stats"].get("level", 0)),
-            "r6-rank": player["metadata"].get("rankname", "UNRANKED").upper(),
-            "r6-mmr": str(player["stats"].get("score", 0)),
-            "r6-kills": str(player["stats"].get("kills", 0)),
-            "r6-aces": str(player["stats"].get("penta", 0)), # Penta kills = Aces
-            "r6-time": f"{int(player['stats'].get('timeplayed', 0) // 3600)}H",
-            "r6-op": player["metadata"].get("fav_op", "UNKNOWN").upper()
-        }
+        # NAČTENÍ REÁLNÝCH DAT
+        # Pokud jsi Unranked nebo API blbne, dáme tam aspoň real Level
+        real_lvl = str(player.get("stats", {}).get("level", "373"))
+        real_rank = player.get("metadata", {}).get("rankname", "FETCHING...").upper()
+        real_mmr = str(player.get("stats", {}).get("score", "0"))
+        real_kills = str(player.get("stats", {}).get("kills", "0"))
+        real_aces = str(player.get("stats", {}).get("penta", "0"))
+        
+        # Čas (přepočet na hodiny)
+        seconds = player.get("stats", {}).get("timeplayed", 0)
+        real_time = f"{int(seconds // 3600)}H"
+        
+        # Operátor
+        real_op = player.get("metadata", {}).get("fav_op", "UNKNOWN").upper()
 
-        # 3. Načtení index.html a přepsání hodnot
+        print(f"DATA FOUND: {real_rank} | MMR: {real_mmr} | LVL: {real_lvl}")
+
+        # ZÁPIS DO SOUBORU
         with open("index.html", "r", encoding="utf-8") as f:
             content = f.read()
 
-        for element_id, value in stats.items():
-            # Najde id="..." a přepíše obsah mezi > a </span>
-            pattern = rf'(id="{element_id}">).*?(</span>)'
-            content = re.sub(pattern, rf'\1{value}\2', content)
+        stats_map = {
+            "r6-lvl": real_lvl,
+            "r6-rank": real_rank,
+            "r6-mmr": real_mmr,
+            "r6-kills": real_kills,
+            "r6-aces": real_aces,
+            "r6-time": real_time,
+            "r6-op": real_op
+        }
 
-        # 4. Uložení změn
+        for eid, val in stats_map.items():
+            pattern = rf'(id="{eid}">).*?(</span>)'
+            content = re.sub(pattern, rf'\1{val}\2', content)
+
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(content)
             
-        print("Successfully synced: " + ", ".join([f"{k}:{v}" for k, v in stats.items()]))
+        print("HTML UPDATE: SUCCESSFUL")
 
     except Exception as e:
-        print(f"Error during update: {e}")
+        print(f"ERROR: {e}")
 
 if __name__ == "__main__":
     update_html()
