@@ -16,7 +16,6 @@
             overflow: hidden; font-family: 'Inter', sans-serif;
         }
 
-        /* HLAVNÍ NÁPIS */
         .header {
             margin-top: 15vh;
             text-align: center;
@@ -39,7 +38,6 @@
             50% { color: #880000; }
         }
 
-        /* SPODNÍ PANEL */
         .footer {
             position: absolute;
             bottom: 25px;
@@ -47,7 +45,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Sjednocené mezery mezi prvky */
+            gap: 15px;
         }
 
         .stat-item {
@@ -62,14 +60,12 @@
             transform: translateY(-2px);
         }
 
-        /* Sjednocení rámečků pro widgety */
-        iframe, .statsfm-card, .wigle-img {
+        iframe, .stats-card, .wigle-img {
             border-radius: 8px;
             border: 1px solid #1a0000;
             background: #111;
         }
 
-        /* SYSTÉMOVÝ ŘÁDEK (Steam + Uptime) */
         .system-log {
             color: #cc0000;
             font-family: monospace;
@@ -84,24 +80,12 @@
             margin-top: 5px;
         }
 
-        .system-log a {
-            color: #cc0000;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
+        .system-log a { color: #cc0000; text-decoration: none; }
+        .system-log a:hover { color: #ff0000; }
+        .system-log span.value { color: #ff0000; }
 
-        .system-log a:hover {
-            color: #ff0000;
-        }
-
-        .system-log span.value {
-            color: #ff0000;
-        }
-
-        /* Mobilní optimalizace */
         @media (max-width: 768px) {
             .system-log { font-size: 9px; flex-direction: column; gap: 5px; text-align: center; }
-            iframe { width: 90vw; }
         }
     </style>
 </head>
@@ -115,19 +99,19 @@
         
         <div class="stat-item">
             <iframe 
-                src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNiwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYm94Iiwid2lkdGgiOjQyMCwiaGVpZ2h0Ijo4MCwiYm9yZGVyUmFkaXVzIjo4LCJwYWRkaW5nIjoxMiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2UsInJlZnJlc2hJbnRlcnZhbCI6Nn19LCJwbGF5ZXJzIjp7InNpbmdsZSI6eyJ1c2VybmFtZSI6IlBlbGxhcmhvZG9uIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOnsiYWNjb3VudEluZm8iOnsibGV2ZWwiOjM3MywieHAiOjAsInByb2ZpbGVQaWN0dXJlIjoiaHR0cHM6Ly9hdmF0YXJzLnViaXNvZnQuY29tLzAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4Ni9kZWZhdWx0XzE0Nl8xNDYucG5nIiwicHJvZmlsZSI6eyJsZXZlbCI6MzczLCJ4cCI6MH0sInByb2ZpbGVzIjpbeyJwbGF0Zm9ybVR5cGUiOiJ1cGxheSIsIm5hbWVPblBsYXRmb3JtIjoiUGVsbGFyaG9kb24ifV19LCJzdGF0cyI6eyJwbGF0Zm9ybV9mYW1pbGllc19mdWxsX3Byb2ZpbGVzIjpbeyJwcm9maWxlIjoiMDA0NGJhN2EtOTI0Yi00NTBlLWI0YWItZjBiYTk5NTRmZTg2IiwiYm9hcmRfaWRzX2Z1bGxfcHJvZmlsZXMiOlt7ImJvYXJkX2lkIjoicmFua2VkIiwiZnVsbF9wcm9maWxlcyI6W3sic2Vhc29uX2lkIjo0MSwicHJvZmlsZSI6eyJyYW5rIjoyLCJyYW5rX3BvaW50cyI6MTE1MCwibWF4X3JhbmsiOjIsIm1heF9yYW5rX3BvaW50cyI6MTE1MCwia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb24iOjAsInVwZGF0ZV90aW1lIjoiMDAwMS0wMS0wMVQwMDowMDowMCswMDowMCJ9LCJzZWFzb25fc3RhdGlzdGljcyI6eyJraWxscyI6MTIsImRlYXRocyI6MTMsIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjIsImxvc3NlcyI6MSwiYWJhbmRvbnMiOjB9fX1dfSx7ImJvYXJkX2lkIjoiY2FzdWFsIiwiZnVsbF9wcm9maWxlcyI6W3sic2Vhc29uX2lkIjo0MSwicHJvZmlsZSI6eyJyYW5rIjowLCJyYW5rX3BvaW50cyI6MCwibWF4X3JhbmsiOjAsIm1heF9yYW5rX3BvaW50cyI6MCwia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb24iOjUsInVwZGF0ZV90aW1lIjoiMDAwMS0wMS0wMVQwMDowMDowMCswMDowMCJ9LCJzZWFzb25fc3RhdGlzdGljcyI6eyJraWxscyI6ODA1LCJkZWF0aHMiOjU3OSwibWF0Y2hfb3V0Y29tZXMiOnsid2lucyI6MTAxLCJsb3NzZXMiOjEyOCwiYWJhbmRvbnMiOjV9fX1dfV19XX19LCJzdGF0dXMiOiJzdWNjZXNzIiwiZXJyb3IiOm51bGx9LCJ0ZWFtQSI6eyJuYW1lIjoiRU5FTVkgVEVBTSAtIEFUSyIsInBsYXllcnMiOlt7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9XX0sInRlYW1CIjp7Im5hbWUiOiJZT1VSIFRFQU0gLSBERUYiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19fX0=" 
+                src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNiwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYm94Iiwid2lkdGgiOjQyMCwiaGVpZ2h0Ijo4MCwiYm9yZGVyUmFkaXVzIjo4LCJwYWRkaW5nIjoxMiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2UsInJlZnJlc2hJbnRlcnZhbCI6Nn19LCJwbGF5ZXJzIjp7InNpbmdsZSI6eyJ1c2VybmFtZSI6IlBlbGxhcmhvZG9uIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOnsiYWNjb3VudEluZm8iOnsibGV2ZWwiOjM3MywieHAiOjAsInByb2ZpbGVQaWN0dXJlIjoiaHR0cHM6Ly9hdmF0YXJzLnViaXNvZnQuY29tLzAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4Ni9kZWZhdWx0XzE0Nl8xNDYucG5nIiwicHJvZmlsZSI6eyJsZXZlbCI6MzczLCJ4cCI6MH0sInByb2ZpbGVzIjpbeyJwbGF0Zm9ybVR5cGUiOiJ1cGxheSIsIm5hbWVPblBsYXRmb3JtIjoiUGVsbGFyaG9kb24ifV19LCJzdGF0cyI6eyJwbGF0Zm9ybV9mYW1pbGllc19mdWxsX3Byb2ZpbGVzIjpbeyJwcm9maWxlIjoiMDA0NGJhN2EtOTI0Yi00NTBlLWI0YWAbZjBiYTk5NTRmZTg2IiwiYm9hcmRfaWRzX2Z1bGxfcHJvZmlsZXMiOlt7ImJvYXJkX2lkIjoicmFua2VkIiwiZnVsbF9wcm9maWxlcyI6W3sic2Vhc29uX2lkIjo0MSwicHJvZmlsZSI6eyJyYW5rIjoyLCJyYW5rX3BvaW50cyI6MTE1MCwibWF4X3JhbmsiOjIsIm1heF9yYW5rX3BvaW50cyI6MTE1MCwia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb24iOjAsInVwZGF0ZV90aW1lIjoiMDAwMS0wMS0wMVQwMDowMDowMCswMDowMCJ9LCJzZWFzb25fc3RhdGlzdGljcyI6eyJraWxscyI6MTIsImRlYXRocyI6MTMsIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjIsImxvc3NlcyI6MSwiYWJhbmRvbnMiOjB9fX1dfSx7ImJvYXJkX2lkIjoiY2FzdWFsIiwiZnVsbF9wcm9maWxlcyI6W3sic2Vhc29uX2lkIjo0MSwicHJvZmlsZSI6eyJyYW5rIjowLCJyYW5rX3BvaW50cyI6MCwibWF4X3JhbmsiOjAsIm1heF9yYW5rX3BvaW50cyI6MCwia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb24iOjUsInVwZGF0ZV90aW1lIjoiMDAwMS0wMS0wMVQwMDowMDowMCswMDowMCJ9LCJzZWFzb25fc3RhdGlzdGljcyI6eyJraWxscyI6ODA1LCJkZWF0aHMiOjU3OSwibWF0Y2hfb3V0Y29tZXMiOnsid2lucyI6MTAxLCJsb3NzZXMiOjEyOCwiYWJhbmRvbnMiOjV9fX1dfV19XX19LCJzdGF0dXMiOiJzdWNjZXNzIiwiZXJyb3IiOm51bGx9LCJ0ZWFtQSI6eyJuYW1lIjoiRU5FTVkgVEVBTSAtIEFUSyIsInBsYXllcnMiOlt7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9XX0sInRlYW1CIjp7Im5hbWUiOiJZT1VSIFRFQU0gLSBERUYiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19fX0=" 
                 width="420" height="80" frameborder="0" scrolling="no"></iframe>
         </div>
 
         <div class="stat-item">
             <a href="https://stats.fm/31t4msdnvfenngbqcadme5oygj3q" target="_blank">
-                <img src="https://statsfm-cards.vercel.app/api/now-playing?id=31t4msdnvfenngbqcadme5oygj3q&theme=dark" class="statsfm-card" alt="Spotify Now Playing" height="80">
+                <img src="https://statsfm-cards.vercel.app/api/now-playing?id=31t4msdnvfenngbqcadme5oygj3q&theme=dark" class="stats-card" height="80" alt="Stats.fm Spotify">
             </a>
         </div>
 
         <div class="stat-item">
             <a href="https://wigle.net" target="_blank">
-                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" class="wigle-img" height="35" alt="WiGLE Stats">
+                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" class="wigle-img" height="35">
             </a>
         </div>
 
@@ -142,7 +126,6 @@
     </div>
 
     <script>
-        // Nastavení počátečního data pro Uptime
         const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
         function update() {
             const now = new Date().getTime();
