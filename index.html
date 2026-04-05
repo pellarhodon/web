@@ -39,7 +39,7 @@
             50% { color: #880000; }
         }
 
-        /* SPODNÍ PANEL S BANNERY A LOGY */
+        /* SPODNÍ PANEL */
         .footer {
             position: absolute;
             bottom: 25px;
@@ -47,7 +47,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .stat-item {
@@ -63,32 +63,38 @@
 
         iframe { border-radius: 8px; border: 1px solid #1a0000; background: #111; }
 
-        /* SJEDNOCENÝ STYL PRO TEXTOVÉ LOGY (STEAM & UPTIME) */
-        .steam-box, #uptime-log {
-            color: #cc0000; /* Identická rudá barva */
+        /* JEDEN SPOLEČNÝ SYSTÉMOVÝ ŘÁDEK */
+        .system-log {
+            color: #cc0000;
             font-family: monospace;
             font-size: 11px;
             letter-spacing: 2px;
             text-transform: uppercase;
             text-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
             font-weight: bold;
-        }
-
-        .steam-box {
-            text-decoration: none;
-            border: 1px solid #1a0000;
-            padding: 10px 20px;
-            border-radius: 4px;
-            background: rgba(15, 0, 0, 0.6);
-            display: inline-block;
-        }
-
-        .steam-box span {
-            color: #ff0000; /* Zvýraznění hodnot */
-        }
-
-        #uptime-log {
+            display: flex;
+            gap: 15px;
+            align-items: center;
             margin-top: 5px;
+        }
+
+        .system-log a {
+            color: #cc0000;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .system-log a:hover {
+            color: #ff0000;
+        }
+
+        .system-log span.value {
+            color: #ff0000;
+        }
+
+        /* Mobilní fix */
+        @media (max-width: 768px) {
+            .system-log { font-size: 9px; flex-direction: column; gap: 5px; text-align: center; }
         }
     </style>
 </head>
@@ -107,23 +113,22 @@
         </div>
 
         <div class="stat-item">
-            <a href="https://steamdb.info/calculator/76561198009042620/?cc=eu" target="_blank" class="steam-box">
-                STEAM_VAL: <span>1927€</span> // GAMES: <span>269</span> // PLAYTIME: <span>7,240H</span>
-            </a>
-        </div>
-
-        <div class="stat-item">
             <a href="https://wigle.net" target="_blank">
-                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" width="180" alt="WiGLE Stats">
+                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" width="180">
             </a>
         </div>
 
-        <div id="uptime-log">SYSTEM_SYNC...</div>
+        <div class="system-log">
+            <a href="https://steamdb.info/calculator/76561198009042620/?cc=eu" target="_blank">
+                STEAM_VAL: <span class="value">1927€</span> // GAMES: <span class="value">269</span> // PLAYTIME: <span class="value">7,240H</span>
+            </a>
+            <span>//</span>
+            <div id="uptime-log">UPTIME: SYNC...</div>
+        </div>
 
     </div>
 
     <script>
-        // Start date: 1. Ledna 2025
         const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
         function update() {
             const now = new Date().getTime();
