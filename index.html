@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon // Terminal</title>
+    
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
@@ -19,6 +20,7 @@
             overflow-y: auto;
         }
 
+        /* NENÁPADNÝ PULZUJÍCÍ NADPIS */
         .header { margin-top: 8vh; text-align: center; }
         h1 {
             font-size: clamp(30px, 8vw, 75px); 
@@ -35,6 +37,7 @@
             50% { color: #770000; text-shadow: 0 0 15px rgba(255, 0, 0, 0.15); }
         }
 
+        /* SPODNÍ KONTEJNER PRO INFO */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
@@ -44,6 +47,7 @@
             gap: 25px;
         }
 
+        /* INTERAKTIVNÍ PRVKY (ZTMALÉ V KLIDU, ROZSVÍCENÉ PŘI HOVERU) */
         .interactive-node {
             opacity: 0.35;
             transition: opacity 0.6s ease, transform 0.6s ease;
@@ -53,29 +57,35 @@
             transform: scale(1.01);
         }
 
-        /* ČISTÝ WIDGET BEZ VIDITELNÉHO RÁMU */
-        .r6-widget-box {
-            width: 500px; 
-            height: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .r6-banner {
+        /* R6 BROWSER SOURCE WRAPPER (OŘEZ) */
+        .r6-wrapper {
             width: 500px; 
             height: 70px; 
-            border: none;
+            overflow: hidden; 
+            position: relative; 
+            border: 1px solid #1a0000;
+        }
+        .r6-iframe {
+            width: 1000px; 
+            height: 600px; 
+            border: none; 
+            position: absolute; 
+            top: -140px; /* Posun pro vycentrování banneru */
+            left: -250px; /* Skrytí levého panelu editoru */
+            pointer-events: none;
             filter: grayscale(0.8) brightness(0.6);
             transition: filter 0.6s;
-            pointer-events: none;
         }
-        .interactive-node:hover .r6-banner { filter: grayscale(0) brightness(1); }
+        .interactive-node:hover .r6-iframe {
+            filter: grayscale(0) brightness(1);
+        }
 
+        /* TERMINÁLOVÉ STATISTIKY */
         .terminal-info { text-align: center; }
         .line { 
-            font-size: 14px; 
+            font-size: 14px; /* ZVĚTŠENÉ PÍSMO */
             text-transform: uppercase; 
-            margin: 10px 0; 
+            margin: 12px 0; 
             letter-spacing: 2px; 
         }
         
@@ -83,6 +93,7 @@
         .value { color: #aa0000; font-weight: bold; }
         .separator { color: #220000; margin: 0 10px; }
         
+        /* SPOTIFY BOX */
         #spotify-box { 
             margin: 15px 0; 
             border-left: 3px solid #1a0000; 
@@ -95,6 +106,7 @@
         .cursor { animation: blink 1.2s step-end infinite; color: #550000; }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* WiGLE BANNER */
         .wigle-frame img { 
             border: 0; 
             max-width: 190px;
@@ -113,9 +125,14 @@
     </div>
 
     <div class="footer">
+        
         <div class="interactive-node">
-            <div class="r6-widget-box">
-                <iframe class="r6-banner" src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6MTAwLCJibHVyIjoyMCwicHJpbWFyeSI6IiNlNTM5MzUiLCJhY2NlbnQiOiIjOGU0NGFkIiwidGV4dCI6IiNmZmZmZmYiLCJmb250RmFtaWx5IjoiSW50ZXIiLCJzdGF0c1NpemUiOjIyLCJ1c2VDdXN0b21Db2xvcnMiOmZhbHNlfSwibGF5b3V0Ijp7InR5cGUiOiJiYW5uZXIiLCJ3aWR0aCI6NTAwLCJoZWlnaHQiOjcwLCJib3JkZXJSYWRpdXMiOjAsInBhZGRpbmciOjE2LCJhbGlnbm1lbnQiOiJsZWZ0Iiwic2hvd0JyYW5kaW5nIjpmYWxzZSwicmVmcmVzaEludGVydmFsIjo2fX0sInBsYXllcnMiOnsic2luZ2xlIjp7InVzZXJuYW1lIjoiUGVsbGFyaG9kb24iLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6eyJhY2NvdW50SW5mbyI6eyJsZXZlbCI6MzczLCJ4cCI6MCwicHJvZmlsZVBpY3R1cmUiOiJodHRwczovL2F2YXRhcnMudWJpc29mdC5jb20vMDA0NGJhN2EtOTI0Yi00NTBlLWI0YWAbLWYwYmE5OTU0ZmU4Ni9kZWZhdWx0XzE0Nl8xNDYucG5nIiwicHJvZmlsZSI6eyJsZXZlbCI6MzczLCJ4cCI6MH0sInByb2ZpbGVzIjpbeyJwbGF0Zm9yb1R5cGUiOiJ1cGxheSIsIm5hbWVPblBsYXRmb3JtIjoiUGVsbGFyaG9kb24ifV19LCJzdGF0cyI6eyJwbGF0Zm9ybV9mYW1pbGllc19mdWxsX3Byb2ZpbGVzIjpbeyJByb2ZpbGVfaWQiOiIwMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYiLCJib2FyZF9pZHNfZnVsbF9wcm9maWxlcyI6W3siYm9hcmRfaWQiOiJyYW5rZWQiLCJmdWxsX3Byb2ZpbGVzIjpbeyJzZWFzb25faWQiOjQxLCJwcm9maWxlIjp7InJhbmsiOjIsInJhbmtfcG9pbnRzIjoxMTUwLCJtYXhfcmFuayI6MiwibWF4X3JhbmtfcG9pbnRzIjoxMTUwLCJraWxscyI6MTIsImRlYXRocyI6MTMsIndpbnMiOjIsImxvc3NlcyI6MSwiYWJhbmRvbiI6MCwidXBkYXRlX3RpbWUiOiIwMDAxLTAxLTAxVDAwOjAwOjAwKzAwOjAwIn0sInNlYXNvbl9zdGF0aXN0aWNzIjp7ImtpbGxzIjoxMiwiZGVhdGhzIjoxMywibWF0Y2hfb3V0Y29tZXMiOnsid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9ucyI6MH19fV19LHsiYm9hcmRfaWQiOiJjYXN1YWwiLCJmdWxsX3Byb2ZpbGVzIjpbeyJzZWFzb25faWQiOjQxLCJwcm9maWxlIjp7InJhbmsiOjAsInJhbmtfcG9pbnRzIjowLCJtYXhfcmFuayI6MCwibWF4X3JhbmtfcG9pbnRzIjowLCJraWxscyI6ODEzLCJkZWF0aHMiOjU4Mywid2lucyI6MTAzLCJsb3NzZXMiOjEyOCwiYWJhbmRvbiI6NiwidXBkYXRlX3RpbWUiOiIwMDAxLTAxLTAxVDAwOjAwOjAwKzAwOjAwIn0sInNlYXNvbl9zdGF0aXN0aWNzIjp7ImtpbGxzIjo4MTMsImRlYXRocyI6NTgzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoxMDMsImxvc3NlcyI6MTI4LCJhYmFuZG9ucyI6Nn19fV19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19fQ=="></iframe>
+            <div class="r6-wrapper">
+                <iframe 
+                    class="r6-iframe" 
+                    src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6MTAwLCJibHVyIjoyMCwicHJpbWFyeSI6IiNlNTM5MzUiLCJhY2NlbnQiOiIjOGU0NGFkIiwidGV4dCI6IiNmZmZmZmYiLCJmb250RmFtaWx5IjoiSW50ZXIiLCJzdGF0c1NpemUiOjIyLCJ1c2VDdXN0b21Db2xvcnMiOmZhbHNlfSwibGF5b3V0Ijp7InR5cGUiOiJiYW5uZXIiLCJ3aWR0aCI6NTAwLCJoZWlnaHQiOjcwLCJib3JkZXJSYWRpdXMiOjAsInBhZGRpbmciOjE2LCJhbGlnbm1lbnQiOiJsZWZ0Iiwic2hvd0JyYW5kaW5nIjpmYWxzZSwicmVmcmVzaEludGVydmFsIjo2fX0sInBsYXllcnMiOnsic2luZ2xlIjp7InVzZXJuYW1lIjoiUGVsbGFyaG9kb24iLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6eyJhY2NvdW50SW5mbyI6eyJsZXZlbCI6MzczLCJ4cCI6MCwicHJvZmlsZVBpY3R1cmUiOiJodHRwczovL2F2YXRhcnMudWJpc29mdC5jb20vMDA0NGJhN2EtOTI0Yi00NTBlLWI0YWItZjBiYTk5NTRmZTg2L2RlZmF1bHRfMTQ2XzE0Ni5wbmciLCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2BoardF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2BoardF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MTMsImRlYXRocyI6NTgzLCJ3aW5zIjoxMDMsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo2LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgxMywiZGVhdGhzIjo1ODMsIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMywibG9zc2VzIjoxMjgsImFiYW5kb25zIjo2fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19fQ=="
+                    scrolling="no">
+                </iframe>
             </div>
         </div>
 
@@ -150,6 +167,7 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
+        // Datum začátku pro uptime (můžeš si upravit)
         const START_DATE = new Date(2025, 0, 1).getTime();
 
         async function fetchLanyard() {
@@ -163,7 +181,7 @@
                     document.getElementById('track-name').innerText = "STATION_IDLE";
                     document.getElementById('track-artist').innerText = "NO_AUDIO_FEED";
                 }
-            } catch (e) { console.log("Lanyard down"); }
+            } catch (e) { console.log("Lanyard service unavailable"); }
         }
 
         function updateUptime() {
@@ -178,7 +196,8 @@
 
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
-        fetchLanyard(); updateUptime();
+        fetchLanyard(); 
+        updateUptime();
     </script>
 </body>
 </html>
