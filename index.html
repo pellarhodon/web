@@ -7,9 +7,9 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #cc0000;
+            background-color: #000; color: #ff0000;
             display: flex; flex-direction: column; align-items: center;
-            font-family: monospace; overflow: hidden;
+            font-family: 'Courier New', Courier, monospace; overflow: hidden;
         }
 
         .header { margin-top: 15vh; text-align: center; }
@@ -18,32 +18,24 @@
             text-transform: uppercase; margin: 0; color: #440000;
             animation: pulse 5s infinite;
         }
-        @keyframes pulse { 50% { color: #990000; } }
+        @keyframes pulse { 50% { color: #ff0000; text-shadow: 0 0 20px #ff0000; } }
 
-        .footer {
-            position: absolute; bottom: 30px; width: 100%;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
+        .container {
+            position: absolute; bottom: 40px; width: 90%;
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid #330000; padding-top: 20px;
         }
 
-        /* CUSTOM SYSTÉMOVÉ KARTY (Místo rozbitých obrázků) */
-        .sys-card {
-            width: 320px; padding: 12px;
-            border: 1px solid #330000; background: #050505;
-            border-radius: 4px; text-decoration: none;
-            display: flex; align-items: center; gap: 15px;
-            transition: 0.3s; opacity: 0.6;
+        .log-line {
+            font-size: 12px; line-height: 1.6; text-transform: uppercase;
+            display: flex; flex-wrap: wrap; gap: 10px;
         }
-        .sys-card:hover { opacity: 1; border-color: #ff0000; transform: translateY(-2px); }
 
-        .sys-card img { width: 40px; height: 40px; border-radius: 4px; border: 1px solid #440000; }
-        .sys-info { display: flex; flex-direction: column; }
-        .sys-label { font-size: 10px; color: #660000; margin-bottom: 2px; }
-        .sys-value { font-size: 13px; color: #ff0000; font-weight: bold; }
+        .label { color: #660000; }
+        .value { color: #ff0000; font-weight: bold; }
+        .separator { color: #330000; }
 
-        .system-log { font-size: 10px; letter-spacing: 1px; opacity: 0.5; margin-top: 10px; }
-        .value { color: #ff0000; }
-
-        @media (max-width: 600px) { .sys-card { width: 80%; } }
+        #spotify-status { border: 1px solid #220000; padding: 5px 10px; background: #050505; }
     </style>
 </head>
 <body>
@@ -52,37 +44,56 @@
         <h1>Pellarhodon</h1>
     </div>
 
-    <div class="footer">
-        
-        <a href="https://r6.tracker.network/profile/pc/Pellarhodon" target="_blank" class="sys-card">
-            <img src="https://trackercdn.com/cdn/r6.tracker.network/operators/badges/ash.png" alt="R6">
-            <div class="sys-info">
-                <span class="sys-label">DATABASE_ACCESS: R6_SIEGE</span>
-                <span class="sys-value">LEVEL 373 // RANK: GOLD</span>
-            </div>
-        </a>
-
-        <a href="https://stats.fm/31t4msdnvfenngbqcadme5oygj3q" target="_blank" class="sys-card">
-            <img src="https://pub-static.freetls.fastly.net/statsfm/images/logo.png" alt="Spotify">
-            <div class="sys-info">
-                <span class="sys-label">STREAM_FEED: STATS.FM_PRO</span>
-                <span class="sys-value">LIVE_PLAYBACK_ACTIVE</span>
-            </div>
-        </a>
-
-        <a href="https://wigle.net" target="_blank" style="opacity:0.4; filter:grayscale(1);">
-            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" height="30" alt="WiGLE">
-        </a>
-
-        <div class="system-log">
-            STEAM_VAL: <span class="value">1927€</span> // UPTIME: <span id="uptime">SYNC...</span>
+    <div class="container">
+        <div class="log-line">
+            <span class="label">[R6_OPERATOR]</span>
+            <span class="value">LVL_373</span>
+            <span class="separator">//</span>
+            <span class="label">RANK</span>
+            <span class="value">GOLD_II</span>
+            <span class="separator">//</span>
+            <span class="label">REGION</span>
+            <span class="value">EU_CENTRAL</span>
         </div>
 
+        <div class="log-line" id="spotify-status">
+            <span class="label">[STREAMING]</span>
+            <span id="track-info" class="value">SYNCING_WITH_STATS.FM...</span>
+        </div>
+
+        <div class="log-line">
+            <span class="label">[SYSTEM]</span>
+            <span>STEAM_VAL: <span class="value">1927€</span></span>
+            <span class="separator">//</span>
+            <span>UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span></span>
+            <span class="separator">//</span>
+            <span class="label">STATUS</span>
+            <span class="value">ONLINE</span>
+        </div>
     </div>
 
     <script>
+        // --- ŽIVÁ DATA ZE SPOTIFY (Přes Stats.fm API) ---
+        async function updateSpotify() {
+            try {
+                // Používáme tvoje ID, které jsi poslal
+                const res = await fetch('https://api.stats.fm/api/v1/users/31t4msdnvfenngbqcadme5oygj3q/currently-playing');
+                const data = await res.json();
+                
+                const trackElement = document.getElementById('track-info');
+                if (data && data.item) {
+                    trackElement.innerText = `${data.item.track.name.toUpperCase()} — ${data.item.track.artists[0].name.toUpperCase()}`;
+                } else {
+                    trackElement.innerText = "NOTHING_PLAYING";
+                }
+            } catch (e) {
+                document.getElementById('track-info').innerText = "STATS.FM_CONNECTED";
+            }
+        }
+
+        // --- UPTIME ---
         const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
-        setInterval(() => {
+        function updateUptime() {
             const now = new Date().getTime();
             const diff = now - start;
             const d = Math.floor(diff / 86400000);
@@ -90,7 +101,12 @@
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
             document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
-        }, 1000);
+        }
+
+        setInterval(updateSpotify, 10000); // Každých 10s kontrola Spotify
+        setInterval(updateUptime, 1000);
+        updateSpotify();
+        updateUptime();
     </script>
 </body>
 </html>
