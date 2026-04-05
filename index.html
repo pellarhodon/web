@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon</title>
     
-    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="/favicon.png?v=3">
     <link rel="apple-touch-icon" href="/favicon.png">
 
     <style>
-        /* 1. ZÁKLADNÍ STYL STRÁNKY */
+        /* ZÁKLADNÍ STYL */
         body, html {
             margin: 0;
             padding: 0;
@@ -20,10 +20,10 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
-        /* 2. HLAVNÍ JMÉNO UPPROSTŘED */
+        /* JMÉNO UPPROSTŘED */
         .name-container {
             text-align: center;
             user-select: none;
@@ -43,8 +43,8 @@
         }
 
         h1:hover {
-            color: #550000;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.1);
+            color: #660000;
+            text-shadow: 0 0 35px rgba(255, 0, 0, 0.15);
         }
 
         @keyframes pulse {
@@ -52,55 +52,61 @@
             50% { color: #3a0000; filter: blur(0px); }
         }
 
-        /* 3. SPODNÍ PANEL SE STATISTIKAMI (R6 + WiGLE) */
-        .bottom-stats {
+        /* SPODNÍ PANEL (R6 + WiGLE) */
+        .bottom-panel {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Mezera mezi R6 a WiGLE */
+            gap: 20px;
             z-index: 2;
+            width: 100%;
         }
 
-        /* Společný styl pro utlumení statistik */
         .stat-item {
-            opacity: 0.2; /* Skoro neviditelné v klidu */
-            filter: grayscale(100%) brightness(70%);
-            transition: all 0.6s ease;
+            opacity: 0.25;
+            filter: grayscale(100%) brightness(80%);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .stat-item:hover {
-            opacity: 0.9;
+            opacity: 1;
             filter: grayscale(0%) brightness(100%);
-            transform: scale(1.02);
+            transform: translateY(-5px);
         }
 
-        /* Specifické nastavení pro R6 Iframe */
-        .r6-stats iframe {
-            border: 1px solid #1a0000;
+        /* R6 Widget styling */
+        .r6-widget {
+            width: 420px;
+            height: 80px;
             border-radius: 8px;
-            background: transparent;
+            overflow: hidden;
+            /* Jemný ohraničující stín pro oddělení od absolutní černi */
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.05);
         }
 
-        /* WiGLE Banner */
+        /* WiGLE Banner styling */
         .wigle-stats img {
             max-width: 180px;
             height: auto;
             border: none;
         }
 
-        /* Mobilní optimalizace */
+        /* MOBILNÍ ÚPRAVY */
         @media (max-width: 768px) {
-            .bottom-stats {
-                bottom: 15px;
-                gap: 10px;
+            .r6-widget {
+                width: 90vw; /* Na mobilu se přizpůsobí šířce */
+                height: 80px;
             }
-            .r6-stats iframe {
-                width: 260px; /* Menší na mobilu */
-                height: 130px;
+            .bottom-panel {
+                bottom: 15px;
+                gap: 15px;
+            }
+            h1 {
+                letter-spacing: 0.2em;
             }
         }
     </style>
@@ -111,14 +117,12 @@
         <h1>Pellarhodon</h1>
     </div>
 
-    <div class="bottom-stats">
+    <div class="bottom-panel">
         
-        <div class="stat-item r6-stats">
+        <div class="stat-item r6-widget">
             <iframe 
-                src="https://stats.cc/siege/Pellarhodon/0044ba7a-924b-450e-b4ab-f0ba9954fe86/widget?showKd=1&showHsRate=1&showWinLoss=1&showSessionDuration=1" 
-                width="300" 
-                height="150" 
-                frameborder="0" 
+                src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNiwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYm94Iiwid2lkdGgiOjQyMCwiaGVpZ2h0Ijo4MCwiYm9yZGVyUmFkaXVzIjo4LCJwYWRkaW5nIjoxMiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2FyZF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2FyZF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19" 
+                style="width: 100%; height: 100%; border: none;"
                 scrolling="no">
             </iframe>
         </div>
