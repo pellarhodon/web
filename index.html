@@ -136,27 +136,30 @@
 
     </div>
 
-    <script>
-        // Nastavení data spuštění (formát: Rok, Měsíc-1, Den, Hodina, Minuta)
-        // 2026, 2, 17 znamená 17. března 2026 (leden je 0)
-        const startDate = new Date(2026, 2, 17, 12, 0, 0);
+<script>
+    // Nastav datum na začátek tvé digitální cesty (Rok, Měsíc-1, Den)
+    // Leden=0, Únor=1, Březen=2... takhle to má JavaScript rád.
+    const startDate = new Date(2025, 0, 1, 12, 0, 0); 
 
-        function updateUptime() {
-            const now = new Date();
-            const diff = now - startDate;
+    function updateUptime() {
+        const uptimeElement = document.getElementById('uptime-log');
+        if (!uptimeElement) return;
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
+        const now = new Date();
+        const diff = Math.abs(now - startDate); // Math.abs zajistí, že to nebude záporné
 
-            document.getElementById('uptime-log').innerText = 
-                `UPTIME: ${days}D_${hours}H_${minutes}M_${seconds}S // STATUS: OPERATIONAL`;
-        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
 
-        setInterval(updateUptime, 1000);
-        updateUptime();
-    </script>
+        uptimeElement.innerText = `UPTIME: ${days}D_${hours}H_${minutes}M_${seconds}S // STATUS: OPERATIONAL`;
+    }
+
+    // Spustí se to hned a pak každou vteřinu
+    updateUptime();
+    setInterval(updateUptime, 1000);
+</script>
 
 </body>
 </html>
