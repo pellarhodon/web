@@ -98,67 +98,74 @@
     </div>
 
     <script>
-        // --- R6 AUTOMATIZACE ---
-        async function fetchR6Stats() {
-            const r6Main = document.getElementById('r6-log-main');
-            const r6Stats = document.getElementById('r6-log-stats');
+    // --- R6 AUTOMATIZACE S PROXY ---
+    async function fetchR6Stats() {
+        const r6Main = document.getElementById('r6-log-main');
+        const r6Stats = document.getElementById('r6-log-stats');
+        
+        // Použijeme proxy, aby nás API neblokovalo
+        const proxy = "https://corsproxy.io/?";
+        const target = "https://r6.apitab.com/search/uplay/Pellarhodon";
+
+        try {
+            const response = await fetch(proxy + encodeURIComponent(target));
+            const data = await response.json();
             
-            try {
-                // Fetch dat z R6Tab (nick: Pellarhodon)
-                const response = await fetch('https://r6.apitab.com/search/uplay/Pellarhodon');
-                const data = await response.json();
+            if (data && data.players) {
+                // Vybereme prvního nalezeného hráče
+                const playerId = Object.keys(data.players)[0];
+                const player = data.players[playerId];
                 
-                if (data && data.players) {
-                    const player = Object.values(data.players)[0];
-                    
-                    // Základní data
-                    const lvl = player.stats.level || "N/A";
-                    const rank = (player.metadata.rankname || "UNRANKED").toUpperCase();
-                    const mmr = player.stats.score || "0";
-                    
-                    // Pokročilá data
-                    const kd = (player.stats.kd / 100).toFixed(2); // Převod z API formátu na 1.xx
-                    const wl = (player.stats.wl / 100).toFixed(1); // Převod na procenta
-                    const kills = player.stats.kills || "0";
+                const lvl = player.stats.level || "0";
+                const rank = (player.metadata.rankname || "UNRANKED").toUpperCase();
+                const mmr = player.stats.score || "0";
+                
+                // Převod statistik (děleno 100, protože API posílá celá čísla)
+                const kd = (player.stats.kd / 100).toFixed(2);
+                const wl = (player.stats.wl / 100).toFixed(1);
+                const kills = player.stats.kills || "0";
 
-                    r6Main.innerHTML = `
-                        R6_CORE: <span class="value">LVL ${lvl}</span>
-                        <span class="separator">//</span>
-                        RANK: <span class="value">${rank}</span>
-                        <span class="separator">//</span>
-                        MMR: <span class="value">${mmr}</span>
-                    `;
+                r6Main.innerHTML = `
+                    R6_CORE: <span class="value">LVL ${lvl}</span>
+                    <span class="separator">//</span>
+                    RANK: <span class="value">${rank}</span>
+                    <span class="separator">//</span>
+                    MMR: <span class="value">${mmr}</span>
+                `;
 
-                    r6Stats.innerHTML = `
-                        R6_STATS: <span class="value">K/D ${kd}</span>
-                        <span class="separator">//</span>
-                        W/L: <span class="value">${wl}%</span>
-                        <span class="separator">//</span>
-                        TOTAL_KILLS: <span class="value">${kills}</span>
-                    `;
-                }
-            } catch (error) {
-                r6Main.innerHTML = `R6_DATA: <span class="value">OFFLINE</span>`;
-                r6Stats.innerHTML = `R6_STATS: <span class="value">CONNECTION_ERROR</span>`;
+                r6Stats.innerHTML = `
+                    R6_STATS: <span class="value">K/D ${kd}</span>
+                    <span class="separator">//</span>
+                    W/L: <span class="value">${wl}%</span>
+                    <span class="separator">//</span>
+                    TOTAL_KILLS: <span class="value">${kills}</span>
+                `;
+            } else {
+                r6Main.innerHTML = `R6_DATA: <span class="value">PLAYER_NOT_FOUND</span>`;
             }
+        } catch (error) {
+            console.error(error);
+            r6Main.innerHTML = `R6_DATA: <span class="value">CONNECTION_ERROR</span>`;
+            r6Stats.innerHTML = `R6_STATS: <span class="value">CHECK_CONSOLE</span>`;
         }
+    }
 
-        // --- UPTIME SKRIPT ---
-        const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
-        function updateUptime() {
-            const now = new Date().getTime();
-            const diff = now - start;
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            const log = document.getElementById('uptime-log');
-            if(log) { log.innerText = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`; }
-        }
+    // --- UPTIME SKRIPT ---
+    const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
+    function updateUptime() {
+        const now = new Date().getTime();
+        const diff = now - start;
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const log = document.getElementById('uptime-log');
+        if(log) { log.innerText = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`; }
+    }
 
-        setInterval(updateUptime, 1000);
-        updateUptime();
-        fetchR6Stats();
-    </script>
+    setInterval(updateUptime, 1000);
+    updateUptime();
+    fetchR6Stats();
+</script>
 </body>
 </html>
