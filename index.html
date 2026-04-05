@@ -16,86 +16,44 @@
             overflow: hidden; font-family: 'Inter', sans-serif;
         }
 
-        .header {
-            margin-top: 15vh;
-            text-align: center;
-            z-index: 10;
-        }
-
+        .header { margin-top: 12vh; text-align: center; z-index: 10; }
         h1 {
-            color: #550000;
-            font-size: clamp(40px, 10vw, 90px);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            margin: 0;
-            animation: pulse 8s ease-in-out infinite;
-            user-select: none;
+            color: #550000; font-size: clamp(40px, 10vw, 90px); font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.3em; margin: 0;
+            animation: pulse 8s ease-in-out infinite; user-select: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { color: #330000; }
-            50% { color: #880000; }
-        }
+        @keyframes pulse { 0%, 100% { color: #330000; } 50% { color: #880000; } }
 
         .footer {
-            position: absolute;
-            bottom: 25px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            position: absolute; bottom: 25px; width: 100%;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
         }
 
         .stat-item {
-            opacity: 0.4;
-            filter: grayscale(100%);
+            opacity: 0.4; filter: grayscale(100%);
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .stat-item:hover {
-            opacity: 1;
-            filter: grayscale(0%);
-            transform: translateY(-2px);
-        }
+        .stat-item:hover { opacity: 1; filter: grayscale(0%); transform: translateY(-2px); }
 
-        .stats-card, .wigle-img {
-            border-radius: 8px;
-            border: 1px solid #1a0000;
-            background: #111;
-        }
+        .stats-card, .wigle-img { border-radius: 8px; border: 1px solid #1a0000; background: #111; }
 
-        /* JEDNOTNÝ SYSTÉMOVÝ LOG */
-        .system-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
+        .system-container { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 10px; }
         .system-log {
-            color: #cc0000;
-            font-family: monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
-            font-weight: bold;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
+            color: #cc0000; font-family: monospace; font-size: 10px;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.2); font-weight: bold;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
         }
 
         .system-log a { color: #cc0000; text-decoration: none; transition: 0.3s; }
         .system-log a:hover { color: #ff0000; text-shadow: 0 0 8px #ff0000; }
         .system-log .value { color: #ff0000; }
-        .separator { opacity: 0.5; }
+        .separator { opacity: 0.3; }
 
         @media (max-width: 768px) {
-            .system-log { font-size: 9px; gap: 8px; flex-direction: column; text-align: center; }
+            .system-log { font-size: 8px; gap: 5px; flex-direction: column; text-align: center; }
             .separator { display: none; }
         }
     </style>
@@ -110,23 +68,22 @@
         
         <div class="stat-item">
             <a href="https://stats.fm/31t4msdnvfenngbqcadme5oygj3q" target="_blank">
-                <img src="https://statsfm-cards.vercel.app/api/now-playing?id=31t4msdnvfenngbqcadme5oygj3q&theme=dark" class="stats-card" height="80" alt="Spotify Now Playing">
+                <img src="https://statsfm-cards.vercel.app/api/now-playing?id=31t4msdnvfenngbqcadme5oygj3q&theme=dark" class="stats-card" height="75" alt="Spotify">
             </a>
         </div>
 
         <div class="stat-item">
             <a href="https://wigle.net" target="_blank">
-                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" class="wigle-img" height="35">
+                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" class="wigle-img" height="30">
             </a>
         </div>
 
         <div class="system-container">
-            <div class="system-log">
-                <span>R6_DATA: <span class="value">LVL 373</span></span>
-                <span class="separator">//</span>
-                <span>RANK: <span class="value">GOLD II</span></span>
-                <span class="separator">//</span>
-                <span>OPERATOR: <span class="value">PELLARHODON</span></span>
+            <div class="system-log" id="r6-log-main">
+                R6_CORE: <span class="value">LOADING...</span>
+            </div>
+            <div class="system-log" id="r6-log-stats">
+                R6_STATS: <span class="value">INITIALIZING...</span>
             </div>
 
             <div class="system-log">
@@ -141,8 +98,54 @@
     </div>
 
     <script>
+        // --- R6 AUTOMATIZACE ---
+        async function fetchR6Stats() {
+            const r6Main = document.getElementById('r6-log-main');
+            const r6Stats = document.getElementById('r6-log-stats');
+            
+            try {
+                // Fetch dat z R6Tab (nick: Pellarhodon)
+                const response = await fetch('https://r6.apitab.com/search/uplay/Pellarhodon');
+                const data = await response.json();
+                
+                if (data && data.players) {
+                    const player = Object.values(data.players)[0];
+                    
+                    // Základní data
+                    const lvl = player.stats.level || "N/A";
+                    const rank = (player.metadata.rankname || "UNRANKED").toUpperCase();
+                    const mmr = player.stats.score || "0";
+                    
+                    // Pokročilá data
+                    const kd = (player.stats.kd / 100).toFixed(2); // Převod z API formátu na 1.xx
+                    const wl = (player.stats.wl / 100).toFixed(1); // Převod na procenta
+                    const kills = player.stats.kills || "0";
+
+                    r6Main.innerHTML = `
+                        R6_CORE: <span class="value">LVL ${lvl}</span>
+                        <span class="separator">//</span>
+                        RANK: <span class="value">${rank}</span>
+                        <span class="separator">//</span>
+                        MMR: <span class="value">${mmr}</span>
+                    `;
+
+                    r6Stats.innerHTML = `
+                        R6_STATS: <span class="value">K/D ${kd}</span>
+                        <span class="separator">//</span>
+                        W/L: <span class="value">${wl}%</span>
+                        <span class="separator">//</span>
+                        TOTAL_KILLS: <span class="value">${kills}</span>
+                    `;
+                }
+            } catch (error) {
+                r6Main.innerHTML = `R6_DATA: <span class="value">OFFLINE</span>`;
+                r6Stats.innerHTML = `R6_STATS: <span class="value">CONNECTION_ERROR</span>`;
+            }
+        }
+
+        // --- UPTIME SKRIPT ---
         const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
-        function update() {
+        function updateUptime() {
             const now = new Date().getTime();
             const diff = now - start;
             const d = Math.floor(diff / 86400000);
@@ -150,12 +153,12 @@
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
             const log = document.getElementById('uptime-log');
-            if(log) {
-                log.innerText = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`;
-            }
+            if(log) { log.innerText = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`; }
         }
-        setInterval(update, 1000);
-        update();
+
+        setInterval(updateUptime, 1000);
+        updateUptime();
+        fetchR6Stats();
     </script>
 </body>
 </html>
