@@ -75,6 +75,34 @@
         body::-webkit-scrollbar {
             display: none;
         }
+    .wigle-banner {
+    position: absolute;
+    bottom: 30px; /* Vzdálenost od spodního okraje */
+    left: 50%;
+    transform: translateX(-50%); /* Perfektní vycentrování na střed */
+    opacity: 0.4; /* Banner bude jemně průhledný, aby nepřebíjel jméno */
+    transition: opacity 0.5s ease, filter 0.5s ease;
+    filter: grayscale(100%) brightness(80%); /* Udělá banner černobílý a tmavší, aby ladil */
+}
+
+.wigle-banner:hover {
+    opacity: 1; /* Při najetí myší se plně vybarví */
+    filter: grayscale(0%) brightness(100%);
+}
+
+.wigle-banner img {
+    max-width: 200px; /* Velikost banneru, můžeš upravit */
+    height: auto;
+    border: none;
+}
+
+/* Na mobilech posuneme banner trochu výš, aby nepřekážel systémovým prvkům */
+@media (max-width: 768px) {
+    .wigle-banner {
+        bottom: 20px;
+    }
+}
+        
     </style>
 </head>
 <body>
