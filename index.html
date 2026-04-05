@@ -1,49 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <title>Pellarhodon</title>
     <style>
-        body { background: #000; color: #330000; font-family: sans-serif; text-align: center; margin: 0; height: 100vh; overflow: hidden; }
-        
-        /* Jméno a Uptime kousek odshora */
-        .header { margin-top: 15vh; }
-        
-        h1 { font-size: 80px; margin: 0; text-transform: uppercase; letter-spacing: 10px; }
-        
-        /* TESTOVACÍ BÍLÁ BARVA - aby to bylo vidět i ve tmě */
-        #uptime-log { 
-            color: #ffffff; 
-            font-family: monospace; 
-            font-size: 16px; 
-            margin-top: 20px; 
-            display: block;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000000;
+            display: flex; flex-direction: column; align-items: center; 
+            overflow: hidden; font-family: 'Inter', sans-serif;
         }
 
-        /* Bannery dole */
-        .footer { position: absolute; bottom: 30px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        iframe { border-radius: 8px; border: 1px solid #220000; }
-        img { opacity: 0.4; }
+        /* JMÉNO NAHOŘE */
+        .header { margin-top: 15vh; text-align: center; }
+        
+        h1 {
+            color: #2a0000; font-size: clamp(32px, 10vw, 90px); 
+            font-weight: 900; text-transform: uppercase;
+            letter-spacing: 0.3em; margin: 0;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.02);
+        }
+
+        /* SPODNÍ PANEL */
+        .footer {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Mezera mezi widgety */
+        }
+
+        /* Widgety v klidu utlumené */
+        .stat-item {
+            opacity: 0.25;
+            filter: grayscale(100%) brightness(80%);
+            transition: all 0.7s ease;
+        }
+
+        .stat-item:hover {
+            opacity: 1;
+            filter: grayscale(0%) brightness(100%);
+        }
+
+        iframe { border-radius: 8px; border: 1px solid #1a0000; }
+
+        /* UPTIME ŘÁDEK ÚPLNĚ DOLE */
+        #uptime-log { 
+            color: #330000; /* Temně rudá */
+            font-family: monospace; 
+            font-size: 11px; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Pellarhodon</h1>
-        <div id="uptime-log">SYSTEM_WAITING...</div>
     </div>
 
     <div class="footer">
-        <iframe src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNiwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYm94Iiwid2lkdGgiOjQyMCwiaGVpZ2h0Ijo4MCwiYm9yZGVyUmFkaXVzIjo4LCJwYWRkaW5nIjoxMiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2FyZF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2FyZF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19" 
-        width="420" height="80" frameborder="0" scrolling="no"></iframe>
-        
-        <a href="https://wigle.net">
-            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" width="180">
-        </a>
+        <div class="stat-item">
+            <iframe src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNiwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYm94Iiwid2lkdGgiOjQyMCwiaGVpZ2h0Ijo4MCwiYm9yZGVyUmFkaXVzIjo4LCJwYWRkaW5nIjoxMiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2BoardF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2FyZF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19" 
+            width="420" height="80" frameborder="0" scrolling="no"></iframe>
+        </div>
+
+        <div class="stat-item">
+            <a href="https://wigle.net">
+                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" width="180">
+            </a>
+        </div>
+
+        <div id="uptime-log">SYSTEM_SYNC...</div>
     </div>
 
     <script>
-        const start = new Date(2026, 0, 1).getTime();
+        const start = new Date(2026, 0, 1).getTime(); // Uprav si datum podle sebe
         function update() {
             const now = new Date().getTime();
             const diff = now - start;
@@ -51,7 +88,7 @@
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('uptime-log').innerHTML = "UPTIME: " + d + "D_" + h + "H_" + m + "M_" + s + "S // STATUS: ONLINE";
+            document.getElementById('uptime-log').innerHTML = `UPTIME: ${d}D_${h}H_${m}M_${s}S // STATUS: ONLINE`;
         }
         setInterval(update, 1000);
         update();
