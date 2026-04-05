@@ -4,136 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon</title>
-
-    <link rel="icon" type="image/png" href="/favicon.png?v=2">
-
-    <div class="r6-container">
-    <iframe 
-        src="https://stats.cc/siege/Pellarhodon/0044ba7a-924b-450e-b4ab-f0ba9954fe86/widget?showKd=1&showHsRate=1&showWinLoss=1&showSessionDuration=1" 
-        width="300" 
-        height="150" 
-        frameborder="0" 
-        scrolling="no">
-    </iframe>
-    </div>
     
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <link rel="apple-touch-icon" href="/favicon.png">
+
     <style>
-        /* 1. ABSOLUTNÍ MINIMALISMUS POZADÍ */
+        /* 1. ZÁKLADNÍ STYL STRÁNKY */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #000000; /* Černočerná */
+            background-color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Žádné skrollování */
-            cursor: default;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* 2. DESIGN JMÉNA */
+        /* 2. HLAVNÍ JMÉNO UPPROSTŘED */
         .name-container {
             text-align: center;
-            user-select: none; /* Text nelze označit myší (provokativní detail) */
+            user-select: none;
+            z-index: 1;
         }
 
         h1 {
-            /* Temně krvavá barva na hraně viditelnosti */
             color: #2a0000; 
-            
-            /* Moderní bezpatkový font */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            
-            /* Velikost reagující na displej (responzivní) */
             font-size: clamp(32px, 10vw, 90px); 
-            
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.3em; /* Široké rozestupy pro dominanci */
+            letter-spacing: 0.3em;
             margin: 0;
-            
-            /* Jemná aura */
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.02);
-            
-            /* Animace "Dýchání stínu" */
             animation: pulse 10s ease-in-out infinite;
             transition: color 0.8s ease;
         }
 
-        /* 3. INTERAKCE: Při najetí myší se barva mírně "probudí" */
         h1:hover {
             color: #550000;
             text-shadow: 0 0 30px rgba(255, 0, 0, 0.1);
         }
 
-        /* 4. ANIMACE PULZOVÁNÍ */
         @keyframes pulse {
-            0%, 100% {
-                color: #220000;
-                letter-spacing: 0.3em;
-                filter: blur(1px); /* Mírné rozostření pro snový efekt */
-            }
-            50% {
-                color: #3a0000;
-                letter-spacing: 0.32em;
-                filter: blur(0px);
-            }
+            0%, 100% { color: #220000; filter: blur(1px); }
+            50% { color: #3a0000; filter: blur(0px); }
         }
 
-        /* Skrytí scrollbaru pro jistotu ve všech prohlížečích */
-        body::-webkit-scrollbar {
-            display: none;
+        /* 3. SPODNÍ PANEL SE STATISTIKAMI (R6 + WiGLE) */
+        .bottom-stats {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Mezera mezi R6 a WiGLE */
+            z-index: 2;
         }
-    .wigle-banner {
-    position: absolute;
-    bottom: 30px; /* Vzdálenost od spodního okraje */
-    left: 50%;
-    transform: translateX(-50%); /* Perfektní vycentrování na střed */
-    opacity: 0.4; /* Banner bude jemně průhledný, aby nepřebíjel jméno */
-    transition: opacity 0.5s ease, filter 0.5s ease;
-    filter: grayscale(100%) brightness(80%); /* Udělá banner černobílý a tmavší, aby ladil */
-}
 
-.wigle-banner:hover {
-    opacity: 1; /* Při najetí myší se plně vybarví */
-    filter: grayscale(0%) brightness(100%);
-}
+        /* Společný styl pro utlumení statistik */
+        .stat-item {
+            opacity: 0.2; /* Skoro neviditelné v klidu */
+            filter: grayscale(100%) brightness(70%);
+            transition: all 0.6s ease;
+        }
 
-.wigle-banner img {
-    max-width: 200px; /* Velikost banneru, můžeš upravit */
-    height: auto;
-    border: none;
-}
+        .stat-item:hover {
+            opacity: 0.9;
+            filter: grayscale(0%) brightness(100%);
+            transform: scale(1.02);
+        }
 
-/* Na mobilech posuneme banner trochu výš, aby nepřekážel systémovým prvkům */
-@media (max-width: 768px) {
-    .wigle-banner {
-        bottom: 20px;
-    }
-}
+        /* Specifické nastavení pro R6 Iframe */
+        .r6-stats iframe {
+            border: 1px solid #1a0000;
+            border-radius: 8px;
+            background: transparent;
+        }
 
-    .r6-container {
-    margin-top: 40px; /* Mezera pod tvým jménem */
-    opacity: 0.3; /* Velmi tiché, skoro neviditelné */
-    filter: grayscale(100%) contrast(120%); /* Odstraní barvy, aby to ladilo s černou a rudou */
-    transition: all 0.6s ease;
-    display: flex;
-    justify-content: center;
-}
+        /* WiGLE Banner */
+        .wigle-stats img {
+            max-width: 180px;
+            height: auto;
+            border: none;
+        }
 
-.r6-container:hover {
-    opacity: 0.9; /* Při najetí myší se stats rozsvítí */
-    filter: grayscale(0%) contrast(100%);
-    transform: scale(1.02); /* Mírné zvětšení pro interaktivitu */
-}
-
-/* Skrytí okrajů iframe, aby to působilo čistě */
-iframe {
-    border-radius: 8px;
-    border: 1px solid #1a0000; /* Velmi temně rudý rámeček */
-}
-        
+        /* Mobilní optimalizace */
+        @media (max-width: 768px) {
+            .bottom-stats {
+                bottom: 15px;
+                gap: 10px;
+            }
+            .r6-stats iframe {
+                width: 260px; /* Menší na mobilu */
+                height: 130px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -142,11 +111,25 @@ iframe {
         <h1>Pellarhodon</h1>
     </div>
 
-    <div class="wigle-banner">
-    <a href="https://wigle.net" target="_blank" rel="noopener noreferrer">
-        <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Stats">
-    </a>
+    <div class="bottom-stats">
+        
+        <div class="stat-item r6-stats">
+            <iframe 
+                src="https://stats.cc/siege/Pellarhodon/0044ba7a-924b-450e-b4ab-f0ba9954fe86/widget?showKd=1&showHsRate=1&showWinLoss=1&showSessionDuration=1" 
+                width="300" 
+                height="150" 
+                frameborder="0" 
+                scrolling="no">
+            </iframe>
+        </div>
+
+        <div class="stat-item wigle-stats">
+            <a href="https://wigle.net" target="_blank" rel="noopener noreferrer">
+                <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Stats">
+            </a>
+        </div>
+
     </div>
-    
+
 </body>
 </html>
