@@ -16,18 +16,21 @@
             width: 100%;
             height: 100%;
             background-color: #000000;
+            /* Změna na column, aby jméno mohlo být nahoře */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            align-items: center; 
             overflow: hidden;
             font-family: 'Inter', -apple-system, sans-serif;
         }
 
-        /* JMÉNO UPPROSTŘED */
+        /* JMÉNO POSUNUTÉ VÝŠ */
         .name-container {
             text-align: center;
             user-select: none;
             z-index: 1;
+            /* Posun o 15 % výšky obrazovky odshora */
+            margin-top: 15vh; 
         }
 
         h1 {
@@ -43,8 +46,8 @@
         }
 
         h1:hover {
-            color: #660000;
-            text-shadow: 0 0 35px rgba(255, 0, 0, 0.15);
+            color: #770000;
+            text-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
         }
 
         @keyframes pulse {
@@ -52,10 +55,10 @@
             50% { color: #3a0000; filter: blur(0px); }
         }
 
-        /* SPODNÍ PANEL (R6 + WiGLE) */
+        /* SPODNÍ PANEL ZŮSTÁVÁ DOLE */
         .bottom-panel {
             position: absolute;
-            bottom: 25px;
+            bottom: 30px; /* Trochu víc místa od úplného kraje */
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -67,15 +70,15 @@
         }
 
         .stat-item {
-            opacity: 0.25;
-            filter: grayscale(100%) brightness(80%);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.2;
+            filter: grayscale(100%) brightness(70%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .stat-item:hover {
             opacity: 1;
             filter: grayscale(0%) brightness(100%);
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
 
         /* R6 Widget styling */
@@ -84,8 +87,7 @@
             height: 80px;
             border-radius: 8px;
             overflow: hidden;
-            /* Jemný ohraničující stín pro oddělení od absolutní černi */
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
         /* WiGLE Banner styling */
@@ -97,16 +99,12 @@
 
         /* MOBILNÍ ÚPRAVY */
         @media (max-width: 768px) {
+            .name-container {
+                margin-top: 20vh; /* Na mobilu ještě trochu níž kvůli UI prohlížeče */
+            }
             .r6-widget {
-                width: 90vw; /* Na mobilu se přizpůsobí šířce */
+                width: 90vw;
                 height: 80px;
-            }
-            .bottom-panel {
-                bottom: 15px;
-                gap: 15px;
-            }
-            h1 {
-                letter-spacing: 0.2em;
             }
         }
     </style>
