@@ -97,13 +97,12 @@
 
     </div>
 
-    <script>
-    // --- R6 AUTOMATIZACE S PROXY ---
+   <script>
     async function fetchR6Stats() {
         const r6Main = document.getElementById('r6-log-main');
         const r6Stats = document.getElementById('r6-log-stats');
         
-        // Použijeme proxy, aby nás API neblokovalo
+        // Používáme stabilnější proxy a přímé vyhledávání
         const proxy = "https://corsproxy.io/?";
         const target = "https://r6.apitab.com/search/uplay/Pellarhodon";
 
@@ -111,16 +110,22 @@
             const response = await fetch(proxy + encodeURIComponent(target));
             const data = await response.json();
             
+            // Kontrola, jestli API vrátilo hráče (zkusíme najít nejpřesnější shodu)
             if (data && data.players) {
-                // Vybereme prvního nalezeného hráče
-                const playerId = Object.keys(data.players)[0];
-                const player = data.players[playerId];
+                const playerIds = Object.keys(data.players);
+                // Najdeme hráče, který má v názvu "Pellarhodon" (case-insensitive)
+                const id = playerIds.find(pid => 
+                    data.players[pid].name.toLowerCase() === "pellarhodon".toLowerCase()
+                ) || playerIds[0];
+
+                const player = data.players[id];
                 
+                // DATA EXTRAKCE
                 const lvl = player.stats.level || "0";
                 const rank = (player.metadata.rankname || "UNRANKED").toUpperCase();
                 const mmr = player.stats.score || "0";
                 
-                // Převod statistik (děleno 100, protože API posílá celá čísla)
+                // Formátování statistik (děleno 100 u surových dat z R6Tab)
                 const kd = (player.stats.kd / 100).toFixed(2);
                 const wl = (player.stats.wl / 100).toFixed(1);
                 const kills = player.stats.kills || "0";
@@ -141,16 +146,19 @@
                     TOTAL_KILLS: <span class="value">${kills}</span>
                 `;
             } else {
-                r6Main.innerHTML = `R6_DATA: <span class="value">PLAYER_NOT_FOUND</span>`;
+                // Pokud API nic nenajde, zkusíme fallback na statický výpis tvých známých dat
+                r6Main.innerHTML = `R6_CORE: <span class="value">LVL 373</span> <span class="separator">//</span> RANK: <span class="value">SYNC_ERR</span>`;
+                r6Stats.innerHTML = `R6_STATS: <span class="value">MANUAL_OVERRIDE_ACTIVE</span>`;
             }
         } catch (error) {
-            console.error(error);
-            r6Main.innerHTML = `R6_DATA: <span class="value">CONNECTION_ERROR</span>`;
-            r6Stats.innerHTML = `R6_STATS: <span class="value">CHECK_CONSOLE</span>`;
+            r6Main.innerHTML = `R6_DATA: <span class="value">API_TIMEOUT</span>`;
+            r6Stats.innerHTML = `R6_STATS: <span class="value">RETRYING_CONNECTION...</span>`;
+            // Zkusíme to znovu za 10 sekund
+            setTimeout(fetchR6Stats, 10000);
         }
     }
 
-    // --- UPTIME SKRIPT ---
+    // UPTIME
     const start = new Date(2025, 0, 1, 12, 0, 0).getTime();
     function updateUptime() {
         const now = new Date().getTime();
