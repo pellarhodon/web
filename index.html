@@ -46,15 +46,18 @@
 
         iframe { border-radius: 8px; border: 1px solid #1a0000; }
 
-        /* UPTIME ŘÁDEK ÚPLNĚ DOLE */
-        #uptime-log { 
-            color: #330000; /* Temně rudá */
-            font-family: monospace; 
-            font-size: 11px; 
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 10px;
-            opacity: 0.5;
+     /* UPTIME ŘÁDEK - Viditelnější varianta */
+#uptime-log { 
+    color: #aa0000; /* Jasnější rudá, která už nezmizí */
+    font-family: monospace; 
+    font-size: 11px; 
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 15px;
+    opacity: 0.8; /* Zvýšená viditelnost */
+    /* Jemná záře, aby text "vystoupil" z pozadí */
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.2); 
+}
         }
     </style>
 </head>
