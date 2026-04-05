@@ -3,34 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pellarhodon // OS</title>
+    <title>Pellarhodon // Terminal</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000; color: #cc0000;
             display: flex; flex-direction: column; align-items: center;
-            font-family: 'Courier New', monospace; overflow: hidden;
+            font-family: 'Courier New', Courier, monospace; overflow: hidden;
         }
 
         .header { margin-top: 15vh; text-align: center; }
         h1 {
             font-size: clamp(30px, 8vw, 70px); letter-spacing: 0.4em;
             text-transform: uppercase; margin: 0; color: #330000;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
         }
 
         .terminal {
-            position: absolute; bottom: 40px; width: 90%; max-width: 800px;
-            border-top: 1px solid #220000; padding-top: 20px;
+            position: absolute; bottom: 40px; width: 90%; max-width: 850px;
+            border-top: 1px solid #1a0000; padding-top: 20px;
         }
 
-        .line { font-size: 11px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .line { font-size: 11px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .label { color: #550000; margin-right: 10px; }
         .value { color: #ff0000; font-weight: bold; }
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        #spotify-box { border-left: 2px solid #ff0000; padding-left: 15px; margin: 15px 0; }
+        #spotify-box { 
+            border-left: 2px solid #440000; 
+            padding-left: 15px; 
+            margin: 20px 0;
+            transition: border-color 0.5s;
+        }
+        .active-border { border-left-color: #ff0000 !important; }
     </style>
 </head>
 <body>
@@ -41,68 +47,73 @@
 
     <div class="terminal">
         <div class="line">
-            <span class="label">[ACTIVITY_MONITOR]:</span>
-            <span id="discord-activity" class="value">SCANNING...</span>
+            <span class="label">[SIGNAL_MONITOR]:</span>
+            <span id="discord-activity" class="value">INITIALIZING...</span>
         </div>
 
         <div id="spotify-box">
             <div class="line">
-                <span class="label">STREAM_ID:</span>
-                <span id="track-name" class="value">IDLE</span>
+                <span class="label">AUDIO_STREAM:</span>
+                <span id="track-name" class="value">WAITING...</span>
             </div>
             <div class="line">
-                <span class="label">SOURCE_STATION:</span>
-                <span id="track-artist" class="value">OFFLINE</span>
+                <span class="label">STATION_SRC:</span>
+                <span id="track-artist" class="value">---</span>
             </div>
         </div>
 
         <div class="line">
-            <span class="label">[SYSTEM_LOG]:</span>
-            <span>LVL_373 // STEAM_VAL: <span class="value">1927€</span> // UPTIME: <span id="uptime" class="value">00:00:00</span> <span class="blink">_</span></span>
+            <span class="label">[HARDWARE_LOG]:</span>
+            <span>LVL_373 // STEAM_NET: <span class="value">1927€</span> // UPTIME: <span id="uptime" class="value">00:00:00</span> <span class="blink">_</span></span>
         </div>
     </div>
 
     <script>
-        // TVÉ DISCORD ID (Tady ho musíš mít pro Lanyard)
-        const DISCORD_ID = "215886367803604992"; // Zkontroluj si své ID v Discordu!
+        // TVÉ DISCORD ID
+        const MY_ID = "583764327459192872";
 
-        async function getLanyard() {
+        async function updateLiveStats() {
             try {
-                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-                const { data } = await res.json();
+                const response = await fetch(`https://api.lanyard.rest/v1/users/${MY_ID}`);
+                const { data } = await response.json();
 
-                // 1. SPOTIFY LOGIC
+                // 1. SPOTIFY SEKCE
                 const track = document.getElementById('track-name');
                 const artist = document.getElementById('track-artist');
+                const box = document.getElementById('spotify-box');
                 
                 if (data.listening_to_spotify && data.spotify) {
                     track.innerText = data.spotify.song.toUpperCase();
                     artist.innerText = data.spotify.artist.toUpperCase();
+                    box.classList.add('active-border');
                 } else {
-                    track.innerText = "NO_AUDIO_DETECTED";
-                    artist.innerText = "STATION_SLEEPING";
+                    track.innerText = "STATION_IDLE";
+                    artist.innerText = "NO_AUDIO_IN_FEED";
+                    box.classList.remove('active-border');
                 }
 
-                // 2. ACTIVITY LOGIC (Hry jako R6)
+                // 2. ACTIVITY SEKCE (R6, Hry)
                 const activity = document.getElementById('discord-activity');
-                const r6 = data.activities.find(a => a.name === "Tom Clancy's Rainbow Six Siege" || a.type === 0);
+                // Hledáme aktivitu, která není Spotify (včetně Siege)
+                const game = data.activities.find(a => a.type === 0);
                 
-                if (r6) {
-                    activity.innerText = `${r6.name.toUpperCase()} // ${r6.details || 'IN_GAME'}`;
+                if (game) {
+                    const detail = game.details ? ` // ${game.details}` : "";
+                    activity.innerText = `${game.name.toUpperCase()}${detail}`;
                 } else {
-                    activity.innerText = "NO_ACTIVE_PROCESS";
+                    activity.innerText = "NO_EXTERNAL_PROCESS_DETECTED";
                 }
 
-            } catch (e) {
-                console.error("Lanyard error");
+            } catch (err) {
+                console.log("Lanyard Sync Error");
             }
         }
 
-        // UPTIME
-        const start = new Date(2025, 0, 1).getTime();
+        // UPTIME LOGIC
+        const startTimestamp = new Date(2025, 0, 1).getTime();
         setInterval(() => {
             const now = new Date().getTime();
-            const diff = now - start;
+            const diff = now - startTimestamp;
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
@@ -110,8 +121,9 @@
             document.getElementById('uptime').innerText = `${d}D:${h}H:${m}M:${s}S`;
         }, 1000);
 
-        setInterval(getLanyard, 5000); // Kontrola každých 5s
-        getLanyard();
+        // Update každých 5 vteřin
+        setInterval(updateLiveStats, 5000);
+        updateLiveStats();
     </script>
 </body>
 </html>
