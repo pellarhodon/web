@@ -3,183 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pellarhodon // Terminal OS</title>
-    
-    <link rel="icon" type="image/png" href="favicon.png">
-
+    <title>Pellarhodon // Terminal</title>
     <style>
-        /* ZÁKLADNÍ STYLIZACE - TEMNÝ TERMINÁL */
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #cc0000;
-            display: flex; flex-direction: column; align-items: center;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-        }
-
-        /* HLAVNÍ NÁPIS */
-        .header { margin-top: 12vh; text-align: center; z-index: 10; }
-        h1 {
-            font-size: clamp(35px, 8vw, 75px); letter-spacing: 0.4em;
-            text-transform: uppercase; margin: 0; color: #330000;
-            animation: pulse 6s ease-in-out infinite;
-            user-select: none;
-        }
-        @keyframes pulse { 
-            0%, 100% { color: #220000; text-shadow: 0 0 5px rgba(0,0,0,0); }
-            50% { color: #880000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.2); }
-        }
-
-        /* SPODNÍ KONTEJNÉR PRO STATY */
-        .footer {
-            position: absolute; bottom: 35px; width: 95%; max-width: 900px;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
-            border-top: 1px solid #1a0000; padding-top: 25px;
-        }
-
-        /* FORMÁTOVÁNÍ ŘÁDKŮ */
-        .terminal-section {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            width: 100%;
-        }
-
-        .line {
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-            line-height: 1.4;
-        }
-
+        body { background-color: #000; color: #cc0000; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .header h1 { font-size: 60px; letter-spacing: 15px; color: #330000; text-shadow: 0 0 10px rgba(255,0,0,0.1); margin-bottom: 50px; }
+        .terminal { border-top: 1px solid #220000; padding-top: 20px; width: 80%; max-width: 800px; }
+        .line { font-size: 12px; text-transform: uppercase; margin: 8px 0; letter-spacing: 2px; text-align: center; }
         .label { color: #550000; }
         .value { color: #ff0000; font-weight: bold; }
-        .separator { color: #220000; opacity: 0.5; }
-        
-        /* SPOTIFY BOX */
-        #spotify-box {
-            border-left: 2px solid #330000;
-            padding-left: 15px;
-            margin: 10px 0;
-            transition: border-color 0.8s;
-        }
-        .spotify-active { border-left-color: #ff0000 !important; }
-
-        /* BLIKAJÍCÍ KURZOR */
-        .cursor { animation: blink 1s step-end infinite; color: #ff0000; }
+        .cursor { animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        /* RESPONZIVITA PRO MOBILY */
-        @media (max-width: 600px) {
-            .line { font-size: 9px; gap: 6px; flex-direction: column; text-align: center; }
-            .separator { display: none; }
-        }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>PELLARHODON</h1>
+    <div class="header"><h1>PELLARHODON</h1></div>
+    <div class="terminal">
+        <div class="line">
+            <span class="label">[R6_CORE]:</span> 
+            LVL <span id="r6-lvl">373</span> // 
+            RANK: <span id="r6-rank">COPPER V</span> // 
+            MMR: <span id="r6-mmr">1157</span>
+        </div>
+        <div class="line">
+            <span class="label">[R6_STATS]:</span> 
+            KILLS: <span id="r6-kills">32145</span> // 
+            ACES: <span id="r6-aces">158</span> // 
+            TIME: <span id="r6-time">2140H</span>
+        </div>
+        <div class="line">
+            <span class="label">[SYSTEM]:</span> 
+            OP: <span id="r6-op">IANA / AZAMI</span> <span class="cursor">_</span>
+        </div>
     </div>
-
-    <div class="footer">
-        
-        <div class="terminal-section">
-            <div class="line">
-                <span class="label">[R6_CORE_DATA]:</span>
-                <span class="value">LVL <span _3</span></span>
-                <span class="separator">//</span>
-                <span class="value">RANK: <span id="r6-rank">COPPER V</span></span>
-                <span class="separator">//</span>
-                <span class="value">MMR: <span I57</span></span>
-            </div>
-            <div class="line">
-                <span class="label">[R6_BATTLE_LOG]:</span>
-                <span class="value">KILLS: <span Z145</span></span>
-                <span class="separator">//</span>
-                <span class="value">ACES: <span M8</span></span>
-                <span class="separator">//</span>
-                <span class="value">TIME: <span Q40H</span></span>
-            </div>
-            <div class="line">
-                <span class="label">[R6_FAV_OPERATOR]:</span>
-                <span class="value" id="r6-op">IANA / AZAMI</span>
-            </div>
-        </div>
-
-        <div id="spotify-box">
-            <div class="line">
-                <span class="label">AUDIO_STREAM:</span>
-                <span id="track-name" class="value">SIGNAL_LOST</span>
-            </div>
-            <div class="line">
-                <span class="label">STATION_SRC:</span>
-                <span id="track-artist" class="value">OFFLINE</span>
-            </div>
-        </div>
-
-        <div class="terminal-section">
-            <div class="line">
-                <span class="label">[SYSTEM_INFO]:</span>
-                <span>STEAM_VAL: <span class="value">1927€</span></span>
-                <span class="separator">//</span>
-                <span>UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span></span>
-                <span class="blink cursor">_</span>
-            </div>
-            
-            <div class="line" style="margin-top: 5px; opacity: 0.3;">
-                <a href="https://wigle.net" target="_blank" style="text-decoration: none; color: inherit;">
-                    NETWORK_SCANNER: WiGLE_ENABLED
-                </a>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // --- KONFIGURACE ---
-        const DISCORD_ID = "583764327459192872";
-        const START_DATE = new Date(2025, 0, 1).getTime();
-
-        // --- ŽIVÁ DATA (SPOTIFY & AKTIVITA) ---
-        async function fetchLanyard() {
-            try {
-                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-                const { data } = await res.json();
-
-                const track = document.getElementById('track-name');
-                const artist = document.getElementById('track-artist');
-                const box = document.getElementById('spotify-box');
-
-                if (data.listening_to_spotify && data.spotify) {
-                    track.innerText = data.spotify.song.toUpperCase();
-                    artist.innerText = data.spotify.artist.toUpperCase();
-                    box.classList.add('spotify-active');
-                } else {
-                    track.innerText = "STATION_IDLE";
-                    artist.innerText = "NO_AUDIO_FEED";
-                    box.classList.remove('spotify-active');
-                }
-            } catch (e) {
-                console.error("Lanyard error");
-            }
-        }
-
-        // --- UPTIME POČÍTAČ ---
-        function updateUptime() {
-            const now = new Date().getTime();
-            const diff = now - START_DATE;
-            
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            
-            document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
-        }
-
-        // SPUŠTĚNÍ
-        setInterval(fetchLanyard, 5000);
-        setInterval(updateUptime, 1000);
-        fetchLanyard();
-        updateUptime();
-    </script>
 </body>
 </html>
