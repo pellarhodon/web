@@ -4,28 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pellarhodon // Terminal</title>
+    <link rel="icon" type="image/png" href="https://avatars.ubisoft.com/0044ba7a-924b-450e-b4ab-f0ba9954fe86/default_146_146.png">
+    
     <style>
-        body { background-color: #000; color: #cc0000; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
-        
-        /* PŮVODNÍ NADPIS */
-        .header h1 { font-size: clamp(30px, 8vw, 70px); letter-spacing: 15px; color: #330000; text-shadow: 0 0 10px rgba(255,0,0,0.1); margin: 0 0 30px 0; text-transform: uppercase; }
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; color: #cc0000;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex; flex-direction: column;
+            justify-content: space-between; /* Nadpis nahoru, zbytek dolů */
+            align-items: center;
+            overflow: hidden;
+        }
 
-        /* R6 STREAMING WIDGET BANNER */
-        .r6-banner { margin-bottom: 25px; width: 500px; height: 70px; border: none; }
+        /* PULZUJÍCÍ NADPIS NAHOŘE */
+        .header { margin-top: 10vh; text-align: center; }
+        h1 {
+            font-size: clamp(30px, 8vw, 75px); 
+            letter-spacing: 15px; 
+            color: #330000; 
+            text-transform: uppercase;
+            animation: pulse 4s ease-in-out infinite;
+            margin: 0;
+            user-select: none;
+        }
+        @keyframes pulse {
+            0%, 100% { color: #220000; text-shadow: 0 0 5px rgba(0,0,0,0); }
+            50% { color: #cc0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+        }
 
-        .terminal { width: 90%; max-width: 900px; text-align: center; }
-        .line { font-size: 12px; text-transform: uppercase; margin: 8px 0; letter-spacing: 2px; }
+        /* SPODNÍ SEKCE */
+        .footer {
+            margin-bottom: 5vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* EFEKT ZŘETELNOSTI PO NAJETÍ MYŠÍ */
+        .interactive-node {
+            opacity: 0.4;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .interactive-node:hover {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        /* R6 WIDGET */
+        .r6-banner {
+            width: 500px; height: 70px; border: none;
+            filter: grayscale(0.5) brightness(0.7);
+            transition: filter 0.3s;
+        }
+        .r6-banner:hover { filter: grayscale(0) brightness(1); }
+
+        .terminal-info { text-align: center; }
+        .line { font-size: 11px; text-transform: uppercase; margin: 5px 0; letter-spacing: 2px; }
         .label { color: #550000; }
         .value { color: #ff0000; font-weight: bold; }
-        .separator { color: #220000; margin: 0 10px; }
+        .separator { color: #220000; margin: 0 8px; }
         
-        #spotify-box { margin: 15px 0; border-left: 1px solid #330000; padding-left: 15px; display: inline-block; text-align: left; }
-        .cursor { animation: blink 1s step-end infinite; }
+        #spotify-box { 
+            margin: 10px 0; 
+            border-left: 2px solid #220000; 
+            padding-left: 15px; 
+            text-align: left;
+            transition: border-color 0.3s;
+        }
+        #spotify-box:hover { border-left-color: #cc0000; }
+
+        .cursor { animation: blink 1s step-end infinite; color: #ff0000; }
         @keyframes blink { 50% { opacity: 0; } }
-        
+
         /* WIGLE BANNER */
-        .wigle-frame { margin-top: 25px; display: block; }
-        .wigle-frame img { border: 0; filter: grayscale(1) brightness(0.8) contrast(1.2); }
+        .wigle-frame img { 
+            border: 0; 
+            max-width: 200px;
+            filter: grayscale(1) brightness(0.5);
+            transition: filter 0.3s;
+        }
+        .wigle-frame:hover img { filter: grayscale(0) brightness(1); }
+
+        a { text-decoration: none; color: inherit; }
     </style>
 </head>
 <body>
@@ -34,23 +98,27 @@
         <h1>PELLARHODON</h1>
     </div>
 
-    <iframe class="r6-banner" src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNCwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYmFubmVyIiwid2lkdGgiOjUwMCwiaGVpZ2h0Ijo3MCwiYm9yZGVyUmFkaXVzIjowLCJwYWRkaW5nIjoxNiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2FyZF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2FyZF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19"></iframe>
-
-    <div class="terminal">
-        <div id="spotify-box">
-            <div class="line"><span class="label">AUDIO_STREAM:</span> <span id="track-name" class="value">SIGNAL_LOST</span></div>
-            <div class="line"><span class="label">STATION_SRC:</span> <span id="track-artist" class="value">OFFLINE</span></div>
+    <div class="footer">
+        <div class="interactive-node">
+            <iframe class="r6-banner" src="https://r6data.eu/streaming-widget?data=eyJtb2RlIjoic2luZ2xlIiwiY29uZmlnIjp7InJlZnJlc2hJbnRlcnZhbCI6MzAsInNob3dTdGF0cyI6eyJyYW5rIjp0cnVlLCJycCI6dHJ1ZSwia2QiOnRydWUsIndsIjp0cnVlLCJsZXZlbCI6dHJ1ZSwibGFiZWxzIjp0cnVlfSwiZGVzaWduIjp7InRoZW1lIjoicjYtcmVkIiwiYmFja2dyb3VuZCI6IiMxMTExMTEiLCJiYWNrZ3JvdW5kT3BhY2l0eSI6OTUsImJsdXIiOjAsInByaW1hcnkiOiIjZTUzOTM1IiwiYWNjZW50IjoiIzhlNDRhZCIsInRleHQiOiIjZmZmZmZmIiwiZm9udEZhbWlseSI6IkludGVyIiwic3RhdHNTaXplIjoxNCwidXNlQ3VzdG9tQ29sb3JzIjpmYWxzZX0sImxheW91dCI6eyJ0eXBlIjoiYmFubmVyIiwid2lkdGgiOjUwMCwiaGVpZ2h0Ijo3MCwiYm9yZGVyUmFkaXVzIjowLCJwYWRkaW5nIjoxNiwiYWxpZ25tZW50IjoibGVmdCIsInNob3dCcmFuZGluZyI6ZmFsc2V9fSwicGxheWVycyI6eyJzaW5nbGUiOnsidXNlcm5hbWUiOiJQZWxsYXJob2RvbiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjp7ImFjY291bnRJbmZvIjp7ImxldmVsIjozNzMsInhwIjowLCJwcm9maWxlUGljdHVyZSI6Imh0dHBzOi8vYXZhdGFycy51Ymlzb2Z0LmNvbS8wMDQ0YmE3YS05MjRiLTQ1MGUtYjRhYi1mMGJhOTk1NGZlODYvZGVmYXVsdF8xNDZfMTQ2LnBuZyIsInByb2ZpbGUiOnsibGV2ZWwiOjM3MywieHAiOjB9LCJwcm9maWxlcyI6W3sicGxhdGZvcm1UeXBlIjoidXBsYXkiLCJuYW1lT25QbGF0Zm9ybSI6IlBlbGxhcmhvZG9uIn1dfSwic3RhdHMiOnsicGxhdGZvcm1fZmFtaWxpZXNfZnVsbF9wcm9maWxlcyI6W3sicHJvZmlsZV9pZCI6IjAwNDRiYTdhLTkyNGItNDUwZS1iNGFiLWYwYmE5OTU0ZmU4NiIsImJvYXJkX2lkc19mdWxsX3Byb2ZpbGVzIjpbeyJib2BoardF9pZCI6InJhbmtlZCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MiwicmFua19wb2ludHMiOjExNTAsIm1heF9yYW5rIjoyLCJtYXhfcmFua19wb2ludHMiOjExNTAsImtpbGxzIjoxMiwiZGVhdGhzIjoxMywid2lucyI6MiwibG9zc2VzIjoxLCJhYmFuZG9uIjowLCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjEyLCJkZWF0aHMiOjEzLCJtYXRjaF9vdXRjb21lcyI6eyJ3aW5zIjoyLCJsb3NzZXMiOjEsImFiYW5kb25zIjowfX19XX0seyJib2BoardF9pZCI6ImNhc3VhbCIsImZ1bGxfcHJvZmlsZXMiOlt7InNlYXNvbl9pZCI6NDEsInByb2ZpbGUiOnsicmFuayI6MCwicmFua19wb2ludHMiOjAsIm1heF9yYW5rIjowLCJtYXhfcmFua19wb2ludHMiOjAsImtpbGxzIjo4MDUsImRlYXRocyI6NTc5LCJ3aW5zIjoxMDEsImxvc3NlcyI6MTI4LCJhYmFuZG9uIjo1LCJ1cGRhdGVfdGltZSI6IjAwMDEtMDEtMDFUMDA6MDA6MDArMDA6MDAifSwic2Vhc29uX3N0YXRpc3RpY3MiOnsia2lsbHMiOjgwNSwiZGVhdGhzIjo1NzksIm1hdGNoX291dGNvbWVzIjp7IndpbnMiOjEwMSwibG9zc2VzIjoxMjgsImFiYW5kb25zIjo1fX19XX1dfV19fSwic3RhdHVzIjoic3VjY2VzcyIsImVycm9yIjpudWxsfSwidGVhbUEiOnsibmFtZSI6IkVORU1ZIFRFQU0gLSBBVEsiLCJwbGF5ZXJzIjpbeyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfV19LCJ0ZWFtQiI6eyJuYW1lIjoiWU9VUiBURUFNIC0gREVGIiwicGxheWVycyI6W3sidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH0seyJ1c2VybmFtZSI6IiIsInBsYXRmb3JtIjoidXBsYXkiLCJkYXRhIjpudWxsLCJzdGF0dXMiOiJpZGxlIiwiZXJyb3IiOm51bGx9LHsidXNlcm5hbWUiOiIiLCJwbGF0Zm9ybSI6InVwbGF5IiwiZGF0YSI6bnVsbCwic3RhdHVzIjoiaWRsZSIsImVycm9yIjpudWxsfSx7InVzZXJuYW1lIjoiIiwicGxhdGZvcm0iOiJ1cGxheSIsImRhdGEiOm51bGwsInN0YXR1cyI6ImlkbGUiLCJlcnJvciI6bnVsbH1dfX19"></iframe>
         </div>
 
-        <div class="line">
-            <span class="label">[SYSTEM_INFO]:</span> 
-            STEAM_VAL: <span class="value">1927€</span> 
-            <span class="separator">//</span> 
-            UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span>
-            <span class="cursor">_</span>
+        <div class="terminal-info interactive-node">
+            <div id="spotify-box">
+                <div class="line"><span class="label">AUDIO_STREAM:</span> <span id="track-name" class="value">SIGNAL_LOST</span></div>
+                <div class="line"><span class="label">STATION_SRC:</span> <span id="track-artist" class="value">OFFLINE</span></div>
+            </div>
+
+            <div class="line">
+                <span class="label">[SYSTEM_INFO]:</span> 
+                STEAM_VAL: <span class="value">1927€</span> 
+                <span class="separator">//</span> 
+                UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span>
+                <span class="cursor">_</span>
+            </div>
         </div>
 
-        <a href="https://wigle.net" class="wigle-frame" target="_blank">
+        <a href="https://wigle.net" class="wigle-frame interactive-node" target="_blank">
             <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Banner">
         </a>
     </div>
@@ -70,23 +138,22 @@
                     document.getElementById('track-name').innerText = "STATION_IDLE";
                     document.getElementById('track-artist').innerText = "NO_AUDIO_FEED";
                 }
-            } catch (e) { console.log("Lanyard error"); }
+            } catch (e) { console.log("Lanyard down"); }
         }
 
         function updateUptime() {
             const now = new Date().getTime();
             const diff = now - START_DATE;
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
             document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
         }
 
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
-        fetchLanyard();
-        updateUptime();
+        fetchLanyard(); updateUptime();
     </script>
 </body>
 </html>
