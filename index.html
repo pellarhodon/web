@@ -6,34 +6,109 @@
     <title>Pellarhodon // Terminal</title>
     <style>
         body { background-color: #000; color: #cc0000; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .header h1 { font-size: 60px; letter-spacing: 15px; color: #330000; text-shadow: 0 0 10px rgba(255,0,0,0.1); margin-bottom: 50px; }
-        .terminal { border-top: 1px solid #220000; padding-top: 20px; width: 80%; max-width: 800px; }
-        .line { font-size: 12px; text-transform: uppercase; margin: 8px 0; letter-spacing: 2px; text-align: center; }
+        
+        /* NÁVRAT K ORIGINÁLNÍMU BANNERU */
+        .banner { 
+            white-space: pre; 
+            font-size: 10px; 
+            line-height: 1.2; 
+            margin-bottom: 30px; 
+            color: #cc0000;
+            text-align: center;
+        }
+
+        .terminal { width: 90%; max-width: 900px; text-align: center; }
+        .line { font-size: 12px; text-transform: uppercase; margin: 8px 0; letter-spacing: 2px; }
         .label { color: #550000; }
         .value { color: #ff0000; font-weight: bold; }
+        .separator { color: #220000; margin: 0 10px; }
+        
+        #spotify-box { margin: 20px 0; border-left: 1px solid #330000; padding-left: 15px; display: inline-block; text-align: left; }
         .cursor { animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+        a { text-decoration: none; color: inherit; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>PELLARHODON</h1></div>
+
+    <div class="banner">
+ ██████╗ ███████╗██╗     ██╗      █████╗ ██████╗ ██╗  ██╗ ██████╗ ██████╗  ██████╗ ███╗   ██╗
+ ██╔══██╗██╔════╝██║     ██║     ██╔══██╗██╔══██╗██║  ██║██╔═══██╗██╔══██╗██╔═══██╗████╗  ██║
+ ██████╔╝█████╗  ██║     ██║     ███████║██████╔╝███████║██║   ██║██║  ██║██║   ██║██╔██╗ ██║
+ ██╔═══╝ ██╔══╝  ██║     ██║     ██╔══██║██╔══██╗██╔══██║██║   ██║██║  ██║██║   ██║██║╚██╗██║
+ ██║     ███████╗███████╗███████╗██║  ██║██║  ██║██║  ██║╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║
+ ╚═╝     ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
+    </div>
+
     <div class="terminal">
         <div class="line">
-            <span class="label">[R6_CORE]:</span> 
-            LVL <span _3</span> // 
-            RANK: <span id="r6-rank">COPPER V</span> // 
-            MMR: <span I57</span>
+            <span class="label">[R6_CORE_DATA]:</span> 
+            LVL <span class="value">373</span> 
+            <span class="separator">//</span> 
+            RANK: <span class="value">COPPER V</span> 
+            <span class="separator">//</span> 
+            MMR: <span class="value">1157</span>
         </div>
-        <div class="line">
-            <span class="label">[R6_STATS]:</span> 
-            KILLS: <span Z145</span> // 
-            ACES: <span M8</span> // 
-            TIME: <span Q40H</span>
+
+        <div id="spotify-box">
+            <div class="line">
+                <span class="label">AUDIO_STREAM:</span> 
+                <span id="track-name" class="value">STATION_IDLE</span>
+            </div>
+            <div class="line">
+                <span class="label">STATION_SRC:</span> 
+                <span id="track-artist" class="value">NO_AUDIO_FEED</span>
+            </div>
         </div>
+
         <div class="line">
-            <span class="label">[SYSTEM]:</span> 
-            OP: <span id="r6-op">IANA / AZAMI</span> <span class="cursor">_</span>
+            <span class="label">[SYSTEM_INFO]:</span> 
+            STEAM_VAL: <span class="value">1927€</span> 
+            <span class="separator">//</span> 
+            UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span>
+            <span class="cursor">_</span>
+        </div>
+
+        <div class="line" style="margin-top: 15px; opacity: 0.5;">
+            <a href="https://wigle.net" target="_blank">
+                <span class="label">NETWORK_SCANNER:</span> 
+                <span class="value">WIGLE_ENABLED</span>
+            </a>
         </div>
     </div>
+
+    <script>
+        const DISCORD_ID = "583764327459192872";
+        const START_DATE = new Date(2025, 0, 1).getTime();
+
+        async function fetchLanyard() {
+            try {
+                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                const { data } = await res.json();
+                if (data.listening_to_spotify && data.spotify) {
+                    document.getElementById('track-name').innerText = data.spotify.song.toUpperCase();
+                    document.getElementById('track-artist').innerText = data.spotify.artist.toUpperCase();
+                } else {
+                    document.getElementById('track-name').innerText = "STATION_IDLE";
+                    document.getElementById('track-artist').innerText = "NO_AUDIO_FEED";
+                }
+            } catch (e) { console.log("Lanyard error"); }
+        }
+
+        function updateUptime() {
+            const now = new Date().getTime();
+            const diff = now - START_DATE;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
+        }
+
+        setInterval(fetchLanyard, 5000);
+        setInterval(updateUptime, 1000);
+        fetchLanyard();
+        updateUptime();
+    </script>
 </body>
 </html>
