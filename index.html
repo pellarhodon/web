@@ -2,9 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pellarhodon // Terminal</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Pellarhodon</title> <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
@@ -21,10 +19,9 @@
             overflow-y: auto;
         }
 
-        /* OBŘÍ NADPIS */
         .header { margin-top: 6vh; text-align: center; }
         h1 {
-            font-size: clamp(40px, 12vw, 110px); /* ZVĚTŠENO */
+            font-size: clamp(40px, 12vw, 110px);
             letter-spacing: 25px; 
             color: #1a0000;
             text-transform: uppercase;
@@ -56,59 +53,36 @@
             transform: scale(1.02);
         }
 
-        /* R6 BANNER BOX */
-        .r6-container {
-            width: 420px;
-            height: 80px;
-            border: 1px solid #220000;
-            overflow: hidden;
-            border-radius: 8px;
-            background: rgba(15,15,15,0.95);
-            filter: grayscale(0.9) brightness(0.5);
-            transition: filter 0.6s;
-        }
-        .interactive-node:hover .r6-container { filter: grayscale(0) brightness(1); }
-
-        .r6-internal { width: 100%; height: 100%; display: flex; color: #fff; font-family: 'Inter', sans-serif; }
-        .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
-        .stat-label { font-size: 12px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .stat-val { font-size: 22px; font-weight: 800; }
-        .stat-val.primary { color: #e53935; }
-
-        /* TERMINÁLOVÉ STATY - ZVĚTŠENO */
-        .terminal-info { text-align: center; }
-        .line { 
-            font-size: 18px; /* ZVĚTŠENO Z 14px */
-            text-transform: uppercase; 
-            margin: 15px 0; 
-            letter-spacing: 3px; 
+        /* R6 BANNER STYLE */
+        .r6-overlay-root {
+            width: 420px; height: 80px;
+            background: rgba(26,26,27,1);
+            border-radius: 8px; color: #ffffff;
+            position: relative; display: flex;
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.05);
+            font-family: 'Inter', sans-serif;
         }
         
+        .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+        .stat-label { font-size: 10px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .stat-val { font-size: 16px; font-weight: 800; }
+        .stat-val.primary { color: #9b59b6; }
+        .branding-strip { position: absolute; bottom: 0; right: 8px; height: 16px; font-size: 10px; font-weight: 600; opacity: 0.4; display: flex; align-items: center; letter-spacing: 1px; }
+
+        /* TERMINAL STATS */
+        .terminal-info { text-align: center; }
+        .line { font-size: 18px; text-transform: uppercase; margin: 15px 0; letter-spacing: 3px; }
         .label { color: #550000; }
         .value { color: #cc0000; font-weight: bold; }
         .separator { color: #330000; margin: 0 12px; }
         
-        #spotify-box { 
-            margin: 25px 0; 
-            border-left: 4px solid #220000; 
-            padding-left: 25px; 
-            text-align: left;
-            transition: border-color 0.6s;
-        }
+        #spotify-box { margin: 25px 0; border-left: 4px solid #220000; padding-left: 25px; text-align: left; transition: border-color 0.6s; }
         #spotify-box:hover { border-left-color: #cc0000; }
-
         .cursor { animation: blink 1.2s step-end infinite; color: #770000; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* WiGLE */
-        .wigle-frame img { 
-            border: 0; 
-            max-width: 220px;
-            filter: grayscale(1) brightness(0.3);
-            transition: filter 0.8s;
-        }
+        .wigle-frame img { border: 0; max-width: 220px; filter: grayscale(1) brightness(0.3); transition: filter 0.8s; }
         .wigle-frame:hover img { filter: grayscale(0) brightness(0.9); }
-
         a { text-decoration: none; color: inherit; }
     </style>
 </head>
@@ -119,20 +93,17 @@
     </div>
 
     <div class="footer">
-        
         <div class="interactive-node">
-            <div class="r6-container">
-                <div class="r6-internal">
-                    <div style="background: linear-gradient(180deg, #e53935 0%, rgba(0,0,0,0.5) 150%); display:flex; align-items:center; justify-content:center; padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.1);">
-                        <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-4.webp" alt="Rank" style="height: 56px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-                    </div>
-                    <div style="flex:1; display:flex; align-items:center; justify-content: space-around; padding: 0 15px;">
-                        <div class="stat-group"><div class="stat-label">RP</div><div class="stat-val">1 150</div></div>
-                        <div class="stat-group"><div class="stat-label">K/D</div><div class="stat-val primary">0.92</div></div>
-                        <div class="stat-group"><div class="stat-label">W/L</div><div class="stat-val">2-1</div></div>
-                        <div class="stat-group"><div class="stat-label">LVL</div><div class="stat-val">373</div></div>
-                    </div>
+            <div class="r6-overlay-root">
+                <div style="background: linear-gradient(180deg, #9b59b6 0%, rgba(0,0,0,0.5) 150%); display:flex; align-items:center; justify-content:center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.1);">
+                    <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-3.webp" alt="Rank" style="height: 56px; width: auto;">
                 </div>
+                <div style="flex:1; display:flex; align-items:center; justify-content: space-around; padding: 0 12px;">
+                    <div class="stat-group"><div class="stat-label">RP</div><div class="stat-val">1 200</div></div>
+                    <div class="stat-group"><div class="stat-label">K/D</div><div class="stat-val primary">0.76</div></div>
+                    <div class="stat-group"><div class="stat-label">W/L</div><div class="stat-val">3-3</div></div>
+                </div>
+                <div class="branding-strip">R6DATA.EU</div>
             </div>
         </div>
 
@@ -143,20 +114,11 @@
             </div>
 
             <div class="line">
-                <span class="label">[STEAM_DB]:</span> 
-                VAL: <span class="value">1927€</span> 
-                <span class="separator">//</span> 
-                GAMES: <span class="value">269</span> 
-                <span class="separator">//</span> 
-                PLAYED: <span class="value">222</span>
+                <span class="label">[STEAM_DB]:</span> VAL: <span class="value">1927€</span> <span class="separator">//</span> GAMES: <span class="value">269</span>
             </div>
 
             <div class="line">
-                <span class="label">[STATUS]:</span> 
-                TIME: <span class="value">7,240H</span> 
-                <span class="separator">//</span> 
-                UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span>
-                <span class="cursor">_</span>
+                <span class="label">[STATUS]:</span> UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span><span class="cursor">_</span>
             </div>
         </div>
 
