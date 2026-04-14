@@ -21,6 +21,7 @@
             overflow-y: auto;
         }
 
+        /* HEADER */
         .header { margin-top: 6vh; text-align: center; }
         h1 {
             font-size: clamp(40px, 12vw, 110px);
@@ -55,6 +56,7 @@
             transform: scale(1.02);
         }
 
+        /* R6 BANNER - DARK RED DESIGN */
         .r6-overlay-root {
             width: 500px; height: 75px;
             background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
@@ -77,6 +79,7 @@
             z-index: 1;
         }
 
+        /* TERMINAL STATS */
         .terminal-info { text-align: center; }
         .line { font-size: 16px; text-transform: uppercase; margin: 10px 0; letter-spacing: 2px; }
         .label { color: #550000; }
@@ -148,11 +151,13 @@
     </div>
 
     <script>
-        const DISCORD_ID = "583764327459192872";
+        // CONFIG
         const GITHUB_USER = "pellarhodon";
         const REPO = "pellarhodon.github.io";
+        const DISCORD_ID = "583764327459192872";
         const START_DATE = new Date(2026, 0, 21).getTime();
 
+        // BINARY CLOCK (18-bit stream)
         function updateBinaryClock() {
             const now = new Date();
             const h = now.getHours().toString(2).padStart(6, '0');
@@ -161,46 +166,34 @@
             document.getElementById('binary-clock').innerText = h + m + s;
         }
 
-      async function fetchGit() {
-    try {
-        const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`;
-        console.log("Fetching Git from:", url); // Tohle uvidíš v konzoli (F12)
-
-        const res = await fetch(url);
-        
-        if (res.status === 404) {
-            document.getElementById('git-date').innerText = "REPO_NOT_FOUND";
-            return;
+        // GITHUB FETCH
+        async function fetchGit() {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                const lastCommit = data[0];
+                const date = new Date(lastCommit.commit.author.date);
+                const formattedDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+                document.getElementById('git-date').innerText = formattedDate;
+                document.getElementById('git-msg').innerText = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
+            } catch (e) { 
+                document.getElementById('git-date').innerText = "OFFLINE/404"; 
+            }
         }
 
-        if (!res.ok) {
-            document.getElementById('git-date').innerText = "API_LIMIT";
-            return;
-        }
-
-        const data = await res.json();
-        if (data && data.length > 0) {
-            const lastCommit = data[0];
-            const date = new Date(lastCommit.commit.author.date);
-            const formattedDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
-            
-            document.getElementById('git-date').innerText = formattedDate;
-            document.getElementById('git-msg').innerText = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
-        }
-    } catch (e) { 
-        document.getElementById('git-date').innerText = "CONN_ERROR"; 
-    }
-}
-        }
-
+        // VISIT COUNTER
         async function updateVisits() {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
                 const data = await res.json();
                 document.getElementById('visits').innerText = data.count.toLocaleString();
-            } catch (e) { document.getElementById('visits').innerText = "ERR"; }
+            } catch (e) { 
+                document.getElementById('visits').innerText = "ERR"; 
+            }
         }
 
+        // LANYARD (SPOTIFY)
         async function fetchLanyard() {
             try {
                 const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
@@ -215,6 +208,7 @@
             } catch (e) { console.log("Lanyard error"); }
         }
 
+        // UPTIME COUNTER
         function updateUptime() {
             const now = new Date().getTime();
             const diff = now - START_DATE;
@@ -225,10 +219,12 @@
             document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
         }
 
+        // LOOPS
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
         setInterval(updateBinaryClock, 1000);
         
+        // INITIALIZE
         fetchLanyard(); 
         updateUptime();
         updateVisits(); 
