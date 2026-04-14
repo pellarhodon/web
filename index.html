@@ -137,7 +137,7 @@
             </div>
 
             <div class="line">
-                <span class="label">[ACCESS_LOG]:</span> TOTAL_VISITS: <span id="visits" class="value">LOADING...</span>
+                <span class="label">[ACCESS_LOG]:</span> TOTAL_VISITS: <span id="visits" class="value">SCANNING...</span>
             </div>
         </div>
 
@@ -148,17 +148,19 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
+        // Datum přesunu na GitHub: 21. ledna 2026
         const START_DATE = new Date(2026, 0, 21).getTime();
 
-        // FUNKCE PRO POČÍTADLO NÁVŠTĚV
+        // NOVÉ OPRAVENÉ POČÍTADLO
         async function updateVisits() {
             try {
-                // Služba CountAPI - vytvoří klíč automaticky pro tvou doménu
-                const res = await fetch('https://api.countapi.xyz/hit/pellarhodon.github.io/visits');
+                // Používáme tiny-counter, který je pro GitHub Pages stabilní
+                const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
                 const data = await res.json();
-                document.getElementById('visits').innerText = data.value.toLocaleString();
+                document.getElementById('visits').innerText = data.count.toLocaleString();
             } catch (e) {
-                document.getElementById('visits').innerText = "DATA_CORRUPT";
+                // Pokud API selže, zkusíme záložní zobrazení
+                document.getElementById('visits').innerText = "ENCRYPTED";
             }
         }
 
@@ -189,7 +191,7 @@
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
         
-        // Spuštění funkcí
+        // Spuštění
         fetchLanyard(); 
         updateUptime();
         updateVisits(); 
