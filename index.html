@@ -56,32 +56,31 @@
             transform: scale(1.02);
         }
 
-        /* --- UPRAVENÝ R6 BANNER --- */
+        /* --- ČERVENO-ČERNÝ R6 BANNER --- */
         .r6-overlay-root {
             width: 500px;
             height: 75px;
-            background: rgba(17,17,17,0.95);
-            border-top: 3px solid #9b59b6; /* Fialová barva místo červené */
-            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
+            border-top: 2px solid #cc0000; /* Červená horní linka */
+            border-bottom: 1px solid #220000;
+            border-radius: 2px;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
             position: relative;
             display: flex;
             overflow: hidden; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
-            border-left: 1px solid rgba(255,255,255,0.05);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         
         .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
-        .stat-label { font-size: 10px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .stat-val { font-size: 15px; font-weight: 800; }
-        .stat-val.primary { color: #9b59b6; } /* Fialová hodnota */
+        .stat-label { font-size: 10px; color: #660000; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .stat-val { font-size: 15px; font-weight: 800; color: #eee; }
+        .stat-val.primary { color: #cc0000; } /* Červené zvýraznění */
 
         .rank-glow {
-            position: absolute; width: 150%; height: 150%; 
-            background: radial-gradient(circle, rgba(155,89,182,0.2) 0%, transparent 60%);
+            position: absolute; width: 140%; height: 140%; 
+            background: radial-gradient(circle, rgba(204,0,0,0.15) 0%, transparent 65%);
+            z-index: 1;
         }
 
         /* TERMINAL STATS */
@@ -92,7 +91,7 @@
         .separator { color: #330000; margin: 0 12px; }
         
         #spotify-box { margin: 25px 0; border-left: 4px solid #220000; padding-left: 25px; text-align: left; transition: border-color 0.6s; }
-        #spotify-box:hover { border-left-color: #9b59b6; }
+        #spotify-box:hover { border-left-color: #cc0000; }
         .cursor { animation: blink 1.2s step-end infinite; color: #770000; }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -110,17 +109,17 @@
     <div class="footer">
         <div class="interactive-node">
             <div class="r6-overlay-root">
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 32px; padding-left: 16px;">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 40px; padding-left: 10px;">
                     <div class="stat-group"><div class="stat-label">Season RP</div><div class="stat-val primary">1 200</div></div>
                     <div class="stat-group"><div class="stat-label">LVL</div><div class="stat-val">377</div></div>
                 </div>
                 
                 <div style="position: relative; width: 80px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 2;">
                     <div class="rank-glow"></div>
-                    <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-3.webp" alt="Rank" style="height: 48px; width: auto; z-index: 3; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));">
+                    <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-3.webp" alt="Rank" style="height: 48px; width: auto; z-index: 3; filter: drop-shadow(0 0 8px rgba(204,0,0,0.4));">
                 </div>
                 
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 32px; padding-right: 16px;">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 40px; padding-right: 10px;">
                     <div class="stat-group"><div class="stat-label">K/D</div><div class="stat-val">0.76</div></div>
                     <div class="stat-group"><div class="stat-label">W/L</div><div class="stat-val">3-3</div></div>
                 </div>
@@ -150,8 +149,7 @@
     <script>
         const DISCORD_ID = "583764327459192872";
         
-        // OPRAVENÉ DATUM PŘECHODU NA GIT (21. ledna 2026)
-        // Měsíce v JS začínají nulou, takže 0 = leden
+        // UPRAVENÉ DATUM (21. ledna 2026)
         const START_DATE = new Date(2026, 0, 21).getTime();
 
         async function fetchLanyard() {
