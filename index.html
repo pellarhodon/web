@@ -56,26 +56,22 @@
             transform: scale(1.02);
         }
 
-        /* --- ČERVENO-ČERNÝ R6 BANNER --- */
+        /* R6 BANNER (DARK RED) */
         .r6-overlay-root {
-            width: 500px;
-            height: 75px;
+            width: 500px; height: 75px;
             background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
-            border-top: 2px solid #cc0000; /* Červená horní linka */
+            border-top: 2px solid #cc0000;
             border-bottom: 1px solid #220000;
-            border-radius: 2px;
-            color: #ffffff;
+            border-radius: 2px; color: #ffffff;
             font-family: 'Inter', sans-serif;
-            position: relative;
-            display: flex;
-            overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative; display: flex;
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         
         .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
         .stat-label { font-size: 10px; color: #660000; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
         .stat-val { font-size: 15px; font-weight: 800; color: #eee; }
-        .stat-val.primary { color: #cc0000; } /* Červené zvýraznění */
+        .stat-val.primary { color: #cc0000; }
 
         .rank-glow {
             position: absolute; width: 140%; height: 140%; 
@@ -139,6 +135,10 @@
             <div class="line">
                 <span class="label">[STATUS]:</span> UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span><span class="cursor">_</span>
             </div>
+
+            <div class="line">
+                <span class="label">[ACCESS_LOG]:</span> TOTAL_VISITS: <span id="visits" class="value">LOADING...</span>
+            </div>
         </div>
 
         <a href="https://wigle.net" class="wigle-frame interactive-node" target="_blank">
@@ -148,9 +148,19 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
-        
-        // UPRAVENÉ DATUM (21. ledna 2026)
         const START_DATE = new Date(2026, 0, 21).getTime();
+
+        // FUNKCE PRO POČÍTADLO NÁVŠTĚV
+        async function updateVisits() {
+            try {
+                // Služba CountAPI - vytvoří klíč automaticky pro tvou doménu
+                const res = await fetch('https://api.countapi.xyz/hit/pellarhodon.github.io/visits');
+                const data = await res.json();
+                document.getElementById('visits').innerText = data.value.toLocaleString();
+            } catch (e) {
+                document.getElementById('visits').innerText = "DATA_CORRUPT";
+            }
+        }
 
         async function fetchLanyard() {
             try {
@@ -178,7 +188,11 @@
 
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
-        fetchLanyard(); updateUptime();
+        
+        // Spuštění funkcí
+        fetchLanyard(); 
+        updateUptime();
+        updateVisits(); 
     </script>
 </body>
 </html>
