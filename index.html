@@ -161,15 +161,36 @@
             document.getElementById('binary-clock').innerText = h + m + s;
         }
 
-        async function fetchGit() {
-            try {
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
-                const data = await res.json();
-                const lastCommit = data[0];
-                const date = new Date(lastCommit.commit.author.date);
-                document.getElementById('git-date').innerText = date.toLocaleDateString();
-                document.getElementById('git-msg').innerText = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
-            } catch (e) { document.getElementById('git-date').innerText = "OFFLINE"; }
+      async function fetchGit() {
+    try {
+        const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`;
+        console.log("Fetching Git from:", url); // Tohle uvidíš v konzoli (F12)
+
+        const res = await fetch(url);
+        
+        if (res.status === 404) {
+            document.getElementById('git-date').innerText = "REPO_NOT_FOUND";
+            return;
+        }
+
+        if (!res.ok) {
+            document.getElementById('git-date').innerText = "API_LIMIT";
+            return;
+        }
+
+        const data = await res.json();
+        if (data && data.length > 0) {
+            const lastCommit = data[0];
+            const date = new Date(lastCommit.commit.author.date);
+            const formattedDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+            
+            document.getElementById('git-date').innerText = formattedDate;
+            document.getElementById('git-msg').innerText = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
+        }
+    } catch (e) { 
+        document.getElementById('git-date').innerText = "CONN_ERROR"; 
+    }
+}
         }
 
         async function updateVisits() {
