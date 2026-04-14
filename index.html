@@ -21,7 +21,6 @@
             overflow-y: auto;
         }
 
-        /* HEADER */
         .header { margin-top: 6vh; text-align: center; }
         h1 {
             font-size: clamp(40px, 12vw, 110px);
@@ -44,7 +43,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 40px;
+            gap: 35px;
         }
 
         .interactive-node {
@@ -56,7 +55,6 @@
             transform: scale(1.02);
         }
 
-        /* R6 BANNER */
         .r6-overlay-root {
             width: 500px; height: 75px;
             background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
@@ -79,14 +77,13 @@
             z-index: 1;
         }
 
-        /* TERMINAL STATS */
         .terminal-info { text-align: center; }
-        .line { font-size: 18px; text-transform: uppercase; margin: 15px 0; letter-spacing: 3px; }
+        .line { font-size: 16px; text-transform: uppercase; margin: 10px 0; letter-spacing: 2px; }
         .label { color: #550000; }
         .value { color: #cc0000; font-weight: bold; }
         .separator { color: #330000; margin: 0 12px; }
         
-        #spotify-box { margin: 25px 0; border-left: 4px solid #220000; padding-left: 25px; text-align: left; transition: border-color 0.6s; }
+        #spotify-box { margin: 15px 0; border-left: 4px solid #220000; padding-left: 25px; text-align: left; transition: border-color 0.6s; }
         #spotify-box:hover { border-left-color: #cc0000; }
         .cursor { animation: blink 1.2s step-end infinite; color: #770000; }
         @keyframes blink { 50% { opacity: 0; } }
@@ -129,15 +126,19 @@
             </div>
 
             <div class="line">
-                <span class="label">[BINARY_TIME]:</span> <span id="binary-clock" class="value">000000</span>
+                <span class="label">[BINARY_TIME]:</span> <span id="binary-clock" class="value">000000000000000000</span>
+            </div>
+
+            <div class="line">
+                <span class="label">[SYSTEM_DB]:</span> STEAM_VAL: <span class="value">1927€</span> <span class="separator">//</span> HITS: <span id="visits" class="value">...</span>
+            </div>
+
+            <div class="line">
+                <span class="label">[VERSION_CTRL]:</span> LAST_PUSH: <span id="git-date" class="value">SYNCING...</span> <span class="separator">//</span> <span id="git-msg" class="value">...</span>
             </div>
 
             <div class="line">
                 <span class="label">[STATUS]:</span> UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span><span class="cursor">_</span>
-            </div>
-
-            <div class="line">
-                <span class="label">[ACCESS_LOG]:</span> HITS: <span id="visits" class="value">...</span> <span class="separator">//</span> UPD: <span id="last-hit" class="value">READY</span>
             </div>
         </div>
 
@@ -148,29 +149,35 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
+        const GITHUB_USER = "Pellarhodon";
+        const REPO = "Pellarhodon.github.io";
         const START_DATE = new Date(2026, 0, 21).getTime();
 
-        // BINÁRNÍ HODINY
         function updateBinaryClock() {
             const now = new Date();
             const h = now.getHours().toString(2).padStart(6, '0');
             const m = now.getMinutes().toString(2).padStart(6, '0');
             const s = now.getSeconds().toString(2).padStart(6, '0');
-            document.getElementById('binary-clock').innerText = `${h}:${m}:${s}`;
+            document.getElementById('binary-clock').innerText = h + m + s;
         }
 
-        // POČÍTADLO A HIT UPDATES
+        async function fetchGit() {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
+                const data = await res.json();
+                const lastCommit = data[0];
+                const date = new Date(lastCommit.commit.author.date);
+                document.getElementById('git-date').innerText = date.toLocaleDateString();
+                document.getElementById('git-msg').innerText = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
+            } catch (e) { document.getElementById('git-date').innerText = "OFFLINE"; }
+        }
+
         async function updateVisits() {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
                 const data = await res.json();
                 document.getElementById('visits').innerText = data.count.toLocaleString();
-                
-                const now = new Date();
-                document.getElementById('last-hit').innerText = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
-            } catch (e) {
-                document.getElementById('visits').innerText = "DATA_ERR";
-            }
+            } catch (e) { document.getElementById('visits').innerText = "ERR"; }
         }
 
         async function fetchLanyard() {
@@ -205,6 +212,7 @@
         updateUptime();
         updateVisits(); 
         updateBinaryClock();
+        fetchGit();
     </script>
 </body>
 </html>
