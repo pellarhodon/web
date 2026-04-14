@@ -56,7 +56,7 @@
             transform: scale(1.02);
         }
 
-        /* R6 BANNER (DARK RED) */
+        /* R6 BANNER */
         .r6-overlay-root {
             width: 500px; height: 75px;
             background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
@@ -129,7 +129,7 @@
             </div>
 
             <div class="line">
-                <span class="label">[STEAM_DB]:</span> VAL: <span class="value">1927€</span> <span class="separator">//</span> GAMES: <span class="value">269</span>
+                <span class="label">[BINARY_TIME]:</span> <span id="binary-clock" class="value">000000</span>
             </div>
 
             <div class="line">
@@ -137,7 +137,7 @@
             </div>
 
             <div class="line">
-                <span class="label">[ACCESS_LOG]:</span> TOTAL_VISITS: <span id="visits" class="value">SCANNING...</span>
+                <span class="label">[ACCESS_LOG]:</span> HITS: <span id="visits" class="value">...</span> <span class="separator">//</span> UPD: <span id="last-hit" class="value">READY</span>
             </div>
         </div>
 
@@ -148,19 +148,28 @@
 
     <script>
         const DISCORD_ID = "583764327459192872";
-        // Datum přesunu na GitHub: 21. ledna 2026
         const START_DATE = new Date(2026, 0, 21).getTime();
 
-        // NOVÉ OPRAVENÉ POČÍTADLO
+        // BINÁRNÍ HODINY
+        function updateBinaryClock() {
+            const now = new Date();
+            const h = now.getHours().toString(2).padStart(6, '0');
+            const m = now.getMinutes().toString(2).padStart(6, '0');
+            const s = now.getSeconds().toString(2).padStart(6, '0');
+            document.getElementById('binary-clock').innerText = `${h}:${m}:${s}`;
+        }
+
+        // POČÍTADLO A HIT UPDATES
         async function updateVisits() {
             try {
-                // Používáme tiny-counter, který je pro GitHub Pages stabilní
                 const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
                 const data = await res.json();
                 document.getElementById('visits').innerText = data.count.toLocaleString();
+                
+                const now = new Date();
+                document.getElementById('last-hit').innerText = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
             } catch (e) {
-                // Pokud API selže, zkusíme záložní zobrazení
-                document.getElementById('visits').innerText = "ENCRYPTED";
+                document.getElementById('visits').innerText = "DATA_ERR";
             }
         }
 
@@ -190,11 +199,12 @@
 
         setInterval(fetchLanyard, 5000);
         setInterval(updateUptime, 1000);
+        setInterval(updateBinaryClock, 1000);
         
-        // Spuštění
         fetchLanyard(); 
         updateUptime();
         updateVisits(); 
+        updateBinaryClock();
     </script>
 </body>
 </html>
