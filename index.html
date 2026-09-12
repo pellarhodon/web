@@ -9,12 +9,20 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #cc0000;
+            width: 100%; 
+            min-height: 100vh;
+            background-color: #000; 
+            color: #cc0000;
             font-family: 'Courier New', Courier, monospace;
-            display: flex; flex-direction: column;
+            display: flex; 
+            flex-direction: column;
             justify-content: space-between;
             align-items: center;
             overflow-x: hidden;
@@ -22,14 +30,17 @@
         }
 
         /* HEADER */
-        .header { margin-top: 6vh; text-align: center; }
+        .header { 
+            margin-top: 6vh; 
+            text-align: center; 
+        }
+        
         h1 {
             font-size: clamp(40px, 12vw, 110px);
             letter-spacing: 25px; 
             color: #1a0000;
             text-transform: uppercase;
             animation: slowPulse 8s ease-in-out infinite;
-            margin: 0;
             user-select: none;
         }
 
@@ -38,6 +49,7 @@
             50% { color: #880000; text-shadow: 0 0 25px rgba(255, 0, 0, 0.2); }
         }
 
+        /* FOOTER & LAYOUT */
         .footer {
             margin-bottom: 5vh;
             width: 100%;
@@ -45,81 +57,97 @@
             flex-direction: column;
             align-items: center;
             gap: 35px;
+            padding: 0 15px;
         }
 
         .interactive-node {
             opacity: 0.4;
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
+        
         .interactive-node:hover {
             opacity: 1;
             transform: scale(1.02);
         }
 
-        /* R6 BANNER DESIGN */
-        .r6-overlay-root {
-            width: 500px; height: 75px;
-            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
-            border-top: 2px solid #cc0000;
-            border-bottom: 1px solid #220000;
-            border-radius: 2px; color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            position: relative; display: flex;
-            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        
-        .stat-group { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
-        .stat-label { font-size: 10px; color: #660000; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-        .stat-val { font-size: 15px; font-weight: 800; color: #eee; }
-        .stat-val.primary { color: #cc0000; }
-
-        .rank-glow {
-            position: absolute; width: 140%; height: 140%; 
-            background: radial-gradient(circle, rgba(204,0,0,0.15) 0%, transparent 65%);
-            z-index: 1;
+        /* TRACKER.GG OVERLAY IFRAME */
+        .r6-tracker-frame {
+            width: 100%;
+            max-width: 500px;
+            height: 150px;
+            border: none;
+            overflow: hidden;
+            background: transparent;
         }
 
         /* TERMINAL STATS */
-        .terminal-info { text-align: center; }
-        .line { font-size: 16px; text-transform: uppercase; margin: 10px 0; letter-spacing: 2px; }
+        .terminal-info { 
+            text-align: center; 
+        }
+        
+        .line { 
+            font-size: 16px; 
+            text-transform: uppercase; 
+            margin: 10px 0; 
+            letter-spacing: 2px; 
+            word-break: break-word;
+        }
+        
         .label { color: #550000; }
         .value { color: #cc0000; font-weight: bold; }
         .separator { color: #330000; margin: 0 12px; }
         
-        #spotify-box { margin: 15px 0; border-left: 4px solid #220000; padding-left: 25px; text-align: left; transition: border-color 0.6s; }
-        #spotify-box:hover { border-left-color: #cc0000; }
-        .cursor { animation: blink 1.2s step-end infinite; color: #770000; }
-        @keyframes blink { 50% { opacity: 0; } }
+        #spotify-box { 
+            margin: 15px 0; 
+            border-left: 4px solid #220000; 
+            padding-left: 25px; 
+            text-align: left; 
+            transition: border-color 0.6s; 
+        }
+        
+        #spotify-box:hover { 
+            border-left-color: #cc0000; 
+        }
+        
+        .cursor { 
+            animation: blink 1.2s step-end infinite; 
+            color: #770000; 
+        }
+        
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
 
-        .wigle-frame img { border: 0; max-width: 220px; filter: grayscale(1) brightness(0.3); transition: filter 0.8s; }
-        .wigle-frame:hover img { filter: grayscale(0) brightness(0.9); }
-        a { text-decoration: none; color: inherit; }
+        .wigle-frame img { 
+            border: 0; 
+            max-width: 220px; 
+            filter: grayscale(1) brightness(0.3); 
+            transition: filter 0.8s; 
+        }
+        
+        .wigle-frame:hover img { 
+            filter: grayscale(0) brightness(0.9); 
+        }
+        
+        a { 
+            text-decoration: none; 
+            color: inherit; 
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <header class="header">
         <h1>PELLARHODON</h1>
-    </div>
+    </header>
 
-    <div class="footer">
-        <div class="interactive-node">
-            <div class="r6-overlay-root">
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 40px; padding-left: 10px;">
-                    <div class="stat-group"><div class="stat-label">Season RP</div><div class="stat-val primary">1 200</div></div>
-                    <div class="stat-group"><div class="stat-label">LVL</div><div class="stat-val">377</div></div>
-                </div>
-                
-                <div style="position: relative; width: 80px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 2;">
-                    <div class="rank-glow"></div>
-                    <img src="https://r6data.eu/assets/img/r6_ranks_img/copper-3.webp" alt="Rank" style="height: 48px; width: auto; z-index: 3; filter: drop-shadow(0 0 8px rgba(204,0,0,0.4));">
-                </div>
-                
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 40px; padding-right: 10px;">
-                    <div class="stat-group"><div class="stat-label">K/D</div><div class="stat-val">0.76</div></div>
-                    <div class="stat-group"><div class="stat-label">W/L</div><div class="stat-val">3-3</div></div>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="interactive-node" style="width: 100%; display: flex; justify-content: center;">
+            <iframe 
+                src="https://tracker.gg/overlays/overlay/f589ebda-3d70-4814-9afb-f419744426f2" 
+                class="r6-tracker-frame" 
+                title="Rainbow Six Siege Tracker Overlay">
+            </iframe>
         </div>
 
         <div class="terminal-info interactive-node">
@@ -145,10 +173,10 @@
             </div>
         </div>
 
-        <a href="https://wigle.net" class="wigle-frame interactive-node" target="_blank">
-            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Stats">
+        <a href="https://wigle.net" class="wigle-frame interactive-node" target="_blank" rel="noopener noreferrer">
+            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Network Stats">
         </a>
-    </div>
+    </footer>
 
     <script>
         // CONFIG
@@ -157,13 +185,22 @@
         const DISCORD_ID = "583764327459192872";
         const START_DATE = new Date(2026, 0, 21).getTime();
 
+        // DOM elements cache
+        const binaryClockEl = document.getElementById('binary-clock');
+        const gitDateEl = document.getElementById('git-date');
+        const gitMsgEl = document.getElementById('git-msg');
+        const visitsEl = document.getElementById('visits');
+        const trackNameEl = document.getElementById('track-name');
+        const trackArtistEl = document.getElementById('track-artist');
+        const uptimeEl = document.getElementById('uptime');
+
         // 1. BINARY CLOCK
         function updateBinaryClock() {
             const now = new Date();
             const h = now.getHours().toString(2).padStart(6, '0');
             const m = now.getMinutes().toString(2).padStart(6, '0');
             const s = now.getSeconds().toString(2).padStart(6, '0');
-            document.getElementById('binary-clock').innerText = h + m + s;
+            binaryClockEl.textContent = h + m + s;
         }
 
         // 2. GITHUB FETCH (WITH SMART CACHE)
@@ -171,10 +208,9 @@
             const cachedDate = localStorage.getItem('git_last_date');
             const cachedMsg = localStorage.getItem('git_last_msg');
 
-            // Pokud máme data v paměti, ukážeme je okamžitě (ochrana proti API limitu)
             if (cachedDate) {
-                document.getElementById('git-date').innerText = cachedDate;
-                document.getElementById('git-msg').innerText = cachedMsg;
+                gitDateEl.textContent = cachedDate;
+                gitMsgEl.textContent = cachedMsg;
             }
 
             try {
@@ -185,7 +221,7 @@
                     return; 
                 }
 
-                if (!res.ok) throw new Error();
+                if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
 
                 const data = await res.json();
                 const lastCommit = data[0];
@@ -193,14 +229,13 @@
                 const formattedDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
                 const msg = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
 
-                // Uložíme do paměti prohlížeče
                 localStorage.setItem('git_last_date', formattedDate);
                 localStorage.setItem('git_last_msg', msg);
 
-                document.getElementById('git-date').innerText = formattedDate;
-                document.getElementById('git-msg').innerText = msg;
+                gitDateEl.textContent = formattedDate;
+                gitMsgEl.textContent = msg;
             } catch (e) { 
-                if (!cachedDate) document.getElementById('git-date').innerText = "LIMIT_WAIT"; 
+                if (!cachedDate) gitDateEl.textContent = "LIMIT_WAIT"; 
             }
         }
 
@@ -208,35 +243,41 @@
         async function updateVisits() {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
+                if (!res.ok) throw new Error();
                 const data = await res.json();
-                document.getElementById('visits').innerText = data.count.toLocaleString();
-            } catch (e) { document.getElementById('visits').innerText = "ERR"; }
+                visitsEl.textContent = data.count.toLocaleString();
+            } catch (e) { 
+                visitsEl.textContent = "ERR"; 
+            }
         }
 
         // 4. LANYARD (SPOTIFY)
         async function fetchLanyard() {
             try {
                 const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                if (!res.ok) throw new Error();
                 const { data } = await res.json();
                 if (data.listening_to_spotify && data.spotify) {
-                    document.getElementById('track-name').innerText = data.spotify.song.toUpperCase();
-                    document.getElementById('track-artist').innerText = data.spotify.artist.toUpperCase();
+                    trackNameEl.textContent = data.spotify.song.toUpperCase();
+                    trackArtistEl.textContent = data.spotify.artist.toUpperCase();
                 } else {
-                    document.getElementById('track-name').innerText = "STATION_IDLE";
-                    document.getElementById('track-artist').innerText = "NO_AUDIO_FEED";
+                    trackNameEl.textContent = "STATION_IDLE";
+                    trackArtistEl.textContent = "NO_AUDIO_FEED";
                 }
-            } catch (e) { console.log("Lanyard error"); }
+            } catch (e) { 
+                console.log("Lanyard error"); 
+            }
         }
 
         // 5. UPTIME
         function updateUptime() {
-            const now = new Date().getTime();
-            const diff = now - START_DATE;
+            const now = Date.now();
+            const diff = Math.max(0, now - START_DATE);
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('uptime').innerText = `${d}D_${h}H_${m}M_${s}S`;
+            uptimeEl.textContent = `${d}D_${h}H_${m}M_${s}S`;
         }
 
         // LOOPS
