@@ -88,7 +88,6 @@
             width: 100%;
             height: 100%;
             border: none;
-            /* Jemné červené tónování pro sjednocení barev */
             filter: drop-shadow(0 0 10px rgba(204, 0, 0, 0.2));
         }
 
@@ -254,12 +253,12 @@
         // 3. VISIT COUNTER
         async function updateVisits() {
             try {
-                const res = await fetch(`https://api.counterapi.dev/v1/pellarhodon/visits/up`);
+                const res = await fetch(`https://api.countapi.xyz/hit/${GITHUB_USER}/visits`);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                visitsEl.textContent = data.count.toLocaleString();
+                visitsEl.textContent = data.value.toLocaleString();
             } catch (e) { 
-                visitsEl.textContent = "ERR"; 
+                visitsEl.textContent = "OFFLINE"; 
             }
         }
 
