@@ -253,10 +253,10 @@
         // 3. VISIT COUNTER
         async function updateVisits() {
             try {
-                const res = await fetch(`https://api.countapi.xyz/hit/${GITHUB_USER}/visits`);
+                const res = await fetch(`https://api.counterapi.com/v1/pellarhodon_github_io/visits/up`);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                visitsEl.textContent = data.value.toLocaleString();
+                visitsEl.textContent = data.count.toLocaleString();
             } catch (e) { 
                 visitsEl.textContent = "OFFLINE"; 
             }
