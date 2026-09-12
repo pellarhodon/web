@@ -62,7 +62,7 @@
 
         .interactive-node {
             opacity: 0.4;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.6s ease;
         }
         
         .interactive-node:hover {
@@ -70,14 +70,26 @@
             transform: scale(1.02);
         }
 
-        /* TRACKER.GG OVERLAY IFRAME */
-        .r6-tracker-frame {
+        /* R6 TRACKER OVERLAY CONTAINER */
+        .r6-overlay-wrapper {
             width: 100%;
             max-width: 500px;
             height: 150px;
-            border: none;
+            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
+            border-top: 2px solid #cc0000;
+            border-bottom: 1px solid #220000;
+            border-radius: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             overflow: hidden;
-            background: transparent;
+            position: relative;
+        }
+
+        .r6-tracker-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* Jemné červené tónování pro sjednocení barev */
+            filter: drop-shadow(0 0 10px rgba(204, 0, 0, 0.2));
         }
 
         /* TERMINAL STATS */
@@ -142,7 +154,7 @@
     </header>
 
     <footer class="footer">
-        <div class="interactive-node" style="width: 100%; display: flex; justify-content: center;">
+        <div class="interactive-node r6-overlay-wrapper">
             <iframe 
                 src="https://tracker.gg/overlays/overlay/f589ebda-3d70-4814-9afb-f419744426f2" 
                 class="r6-tracker-frame" 
