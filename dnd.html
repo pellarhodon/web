@@ -1,1 +1,199 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foldjord // D&D Campaign Archive</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
 
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body, html {
+            width: 100%; 
+            min-height: 100vh;
+            background-color: #0a0b0d; 
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(200, 150, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(100, 0, 0, 0.05) 0%, transparent 50%);
+            color: #b5a895;
+            font-family: 'Courier Prime', monospace;
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* NAVIGATION / BACK LINK */
+        .nav-header {
+            width: 100%;
+            max-width: 800px;
+            padding: 25px 20px 0 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .back-link {
+            font-size: 13px;
+            color: #6a6154;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: color 0.4s ease, transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            color: #c8963e;
+            transform: translateX(-4px);
+        }
+
+        /* HEADER AREA */
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            margin-top: 2vh;
+            margin-bottom: 6vh;
+        }
+
+        .realm-title {
+            text-align: center;
+            position: relative;
+        }
+
+        .realm-title::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #c8963e, transparent);
+            margin: 20px auto 0 auto;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(42px, 10vw, 86px);
+            font-weight: 900;
+            letter-spacing: 12px; 
+            color: #e5d3b3;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(200, 150, 62, 0.2);
+            margin: 0;
+            user-select: none;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            letter-spacing: 6px;
+            color: #8c2626;
+            text-transform: uppercase;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* CONTENT PLACEHOLDER CARD */
+        .archive-card {
+            width: 100%;
+            background: rgba(15, 17, 21, 0.75);
+            border-top: 2px solid #c8963e;
+            border-bottom: 1px solid #232730;
+            border-left: 1px solid rgba(200, 150, 62, 0.15);
+            border-right: 1px solid rgba(200, 150, 62, 0.15);
+            border-radius: 2px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .d20-symbol {
+            width: 48px;
+            height: 48px;
+            fill: #c8963e;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 8px rgba(200, 150, 62, 0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(5deg); }
+        }
+
+        .status-msg {
+            font-size: 15px;
+            letter-spacing: 3px;
+            color: #e5d3b3;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #6a6154;
+            max-width: 500px;
+        }
+
+        /* FOOTER */
+        .footer-sig {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #3b3f4a;
+            text-transform: uppercase;
+            margin-bottom: 4vh;
+        }
+
+        .highlight {
+            color: #8c2626;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="nav-header">
+        <a href="index.html" class="back-link">
+            &larr; [ RETURN_TO_TERMINAL ]
+        </a>
+    </header>
+
+    <main class="main-container">
+        <section class="realm-title">
+            <h1>FOLDJORD</h1>
+            <div class="subtitle">CAMPAIGN // CHRONICLES</div>
+        </section>
+
+        <section class="archive-card">
+            <svg class="d20-symbol" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <div class="status-msg">[ ARCHIVE_SEALED ]</div>
+            <p class="description">
+                Kroniky, mapy a záznamy z temného světa Foldjord jsou momentálně uzamčeny. Brzy zde přibudou přehledy sezení, lore a profily postav.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer-sig">
+        DM_LOGS // <span class="highlight">PELLARHODON</span>
+    </footer>
+
+</body>
+</html>
