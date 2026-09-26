@@ -20,7 +20,6 @@
             min-height: 100vh;
             background-color: #0a0b0d;
             
-            /* Tmavé tónování přes tvůj obrázek Foldjord.jpg z repozitáře */
             background-image: 
                 linear-gradient(rgba(10, 11, 13, 0.65), rgba(10, 11, 13, 0.85)),
                 url('Foldjord.jpg');
@@ -147,18 +146,23 @@
             gap: 20px;
         }
 
-        .d20-symbol {
-            width: 48px;
-            height: 48px;
-            fill: #c8963e;
+        /* SEVERSKÝ SYMBOL (VEGVÍSIR) */
+        .norse-symbol {
+            width: 64px;
+            height: 64px;
+            fill: none;
+            stroke: #c8963e;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
             opacity: 0.9;
-            filter: drop-shadow(0 0 8px rgba(200, 150, 62, 0.4));
-            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(200, 150, 62, 0.5));
+            animation: floatAndRotate 12s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes floatAndRotate {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-6px) rotate(5deg); }
+            50% { transform: translateY(-8px) rotate(6deg); }
         }
 
         .status-msg {
@@ -209,9 +213,29 @@
         </section>
 
         <section class="archive-card">
-            <svg class="d20-symbol" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            <!-- VEGVÍSIR SVG SYMBOL -->
+            <svg class="norse-symbol" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="46" stroke-dasharray="2 4"/>
+                <circle cx="50" cy="50" r="40" stroke-width="1"/>
+                <!-- Hlavní osy -->
+                <line x1="50" y1="10" x2="50" y2="90"/>
+                <line x1="10" y1="50" x2="90" y2="50"/>
+                <line x1="22" y1="22" x2="78" y2="78"/>
+                <line x1="22" y1="78" x2="78" y2="22"/>
+                <!-- Runové větvení - Sever -->
+                <path d="M44 18 h12 M46 24 h8 M50 10 l-4 -4 M50 10 l4 -4"/>
+                <!-- Runové větvení - Jih -->
+                <circle cx="50" cy="85" r="3" fill="#c8963e"/>
+                <path d="M44 76 h12 M46 70 h8"/>
+                <!-- Runové větvení - Východ a Západ -->
+                <path d="M82 44 v12 M76 46 v8 M18 44 v12 M24 46 v8"/>
+                <path d="M90 50 l4 -4 M90 50 l4 4 M10 50 l-4 -4 M10 50 l-4 4"/>
+                <!-- Diagonální zak zakončení -->
+                <path d="M26 26 l-4 -4 M74 74 l4 4 M26 74 l-4 4 M74 26 l4 -4"/>
+                <!-- Středový kruh -->
+                <circle cx="50" cy="50" r="6" fill="#121412"/>
             </svg>
+
             <div class="status-msg">[ ARCHIVE_SEALED ]</div>
             <p class="description">
                 Kroniky, mapy a záznamy z temného světa Foldjord jsou momentálně uzamčeny. Brzy zde přibudou přehledy sezení, lore a profily postav.
