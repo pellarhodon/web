@@ -231,28 +231,40 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* TLAČÍTKO PRO MAPU */
-        .map-link-btn {
+        /* KONTEJNER PRO AKČNÍ TLAČÍTKA */
+        .action-buttons-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* DESIGN TLAČÍTEK */
+        .nav-node-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             background: linear-gradient(135deg, rgba(200, 150, 62, 0.15) 0%, rgba(10, 11, 13, 0.8) 100%);
             color: #e5d3b3;
             border: 1px solid #c8963e;
-            padding: 12px 24px;
+            padding: 12px 20px;
             font-family: 'Courier Prime', monospace;
             font-size: 13px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             text-decoration: none;
             border-radius: 2px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             transition: all 0.3s ease;
-            margin-top: 10px;
+            flex: 1 1 200px;
+            max-width: 280px;
         }
 
-        .map-link-btn:hover {
+        .nav-node-btn:hover {
             background: #c8963e;
             color: #0a0b0d;
             box-shadow: 0 0 20px rgba(200, 150, 62, 0.6);
@@ -330,14 +342,19 @@
                 <div class="runic-text">ᚠᛟᛚᛞᛃᛟᚱᛞ</div>
             </div>
 
-            <!-- TLAČÍTKO PRO OTEVŘENÍ INTERAKTIVNÍ MAPY -->
-            <a href="map.html" class="map-link-btn">
-                🗺️ [ OPEN_WORLD_MAP ]
-            </a>
+            <!-- TLAČÍTKA PRO MAPU A KRONIKU -->
+            <div class="action-buttons-group">
+                <a href="map.html" class="nav-node-btn">
+                    🗺️ [ WORLD_MAP ]
+                </a>
+                <a href="journal.html" class="nav-node-btn">
+                    📜 [ CHRONICLES ]
+                </a>
+            </div>
 
             <div class="status-msg">[ ARCHIVE_SEALED ]</div>
             <p class="description">
-                Kroniky, mapy a záznamy z temného světa Foldjord jsou momentálně uzamčeny. Brzy zde přibudou přehledy sezení, lore a profily postav.
+                Lore a mapa světa Foldjord jsou zpřístupněny. Brzy zde přibudou profily postav a seznamy magických artefaktů.
             </p>
         </section>
     </main>
