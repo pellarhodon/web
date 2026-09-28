@@ -29,9 +29,9 @@
             overflow-y: auto;
             position: relative;
 
-            /* MAPA PŘÍMO NA POZADÍ BODY */
+            /* MAPA V POZADÍ */
             background-image: 
-                linear-gradient(rgba(10, 11, 13, 0.5), rgba(10, 11, 13, 0.75)),
+                linear-gradient(rgba(10, 11, 13, 0.55), rgba(10, 11, 13, 0.78)),
                 url('Foldjord.jpg');
             background-size: cover;
             background-position: center center;
@@ -39,26 +39,55 @@
             background-attachment: fixed;
         }
 
-        /* REALISTICKÁ TEXTURA MRAKŮ / MLHY */
-        .cloud-texture-overlay {
+        /* ELEGANTNÍ CHYTRÉ CSS MRAKY (ZVYŠENÁ VIDITELNOST) */
+        .cloud-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 300%;
+            width: 100%;
             height: 100vh;
             pointer-events: none;
             z-index: 0;
-            /* Poloprůhledná textura reálného kouře/mlhy */
-            background-image: url('https://raw.githubusercontent.com/daniel-tonon/pure-css-clouds/master/cloud.png');
-            background-size: contain;
-            background-repeat: repeat-x;
-            opacity: 0.25; /* Intenzita mraků - uprav podle potřeby */
-            animation: driftClouds 60s linear infinite;
+            overflow: hidden;
         }
 
-        @keyframes driftClouds {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .cloud-layer {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 240%;
+            height: 140vh;
+            filter: blur(45px);
+        }
+
+        /* Hlavní proud mraků */
+        .cloud-layer.primary {
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(225, 235, 245, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 65% 55%, rgba(200, 215, 230, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 85%, rgba(220, 230, 240, 0.16) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(190, 205, 225, 0.14) 0%, transparent 45%);
+            animation: moveCloudsPrimary 50s linear infinite alternate;
+        }
+
+        /* Vedlejší protiproud pro hloubku */
+        .cloud-layer.secondary {
+            background: 
+                radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(210, 225, 240, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 20% 75%, rgba(195, 210, 225, 0.13) 0%, transparent 38%);
+            animation: moveCloudsSecondary 80s ease-in-out infinite alternate;
+            opacity: 0.85;
+        }
+
+        @keyframes moveCloudsPrimary {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-25%, -5%) scale(1.08); }
+        }
+
+        @keyframes moveCloudsSecondary {
+            0% { transform: translate(-15%, 5%) scale(1.05); }
+            100% { transform: translate(10%, -10%) scale(0.95); }
         }
 
         /* NAVIGATION / BACK LINK */
@@ -241,8 +270,11 @@
 </head>
 <body>
 
-    <!-- VRSTVA S POHYBLIVOU TEXTUROU MLHY/MRAKŮ -->
-    <div class="cloud-texture-overlay"></div>
+    <!-- VRSTVA CSS MRAKŮ -->
+    <div class="cloud-container">
+        <div class="cloud-layer primary"></div>
+        <div class="cloud-layer secondary"></div>
+    </div>
 
     <header class="nav-header">
         <a href="index.html" class="back-link">
