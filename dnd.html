@@ -39,7 +39,7 @@
             background-attachment: fixed;
         }
 
-        /* ELEGANTNÍ CHYTRÉ CSS MRAKY (ZVYŠENÁ VIDITELNOST) */
+        /* ELEGANTNÍ CHYTRÉ CSS MRAKY */
         .cloud-container {
             position: fixed;
             top: 0;
@@ -60,7 +60,6 @@
             filter: blur(45px);
         }
 
-        /* Hlavní proud mraků */
         .cloud-layer.primary {
             background: 
                 radial-gradient(circle at 15% 25%, rgba(225, 235, 245, 0.18) 0%, transparent 45%),
@@ -70,7 +69,6 @@
             animation: moveCloudsPrimary 50s linear infinite alternate;
         }
 
-        /* Vedlejší protiproud pro hloubku */
         .cloud-layer.secondary {
             background: 
                 radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 40%),
@@ -196,7 +194,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 16px;
+            gap: 20px;
         }
 
         /* MJÖLNIR SYMBOL & RUNES CONTAINER */
@@ -231,6 +229,34 @@
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
+        }
+
+        /* TLAČÍTKO PRO MAPU */
+        .map-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(200, 150, 62, 0.15) 0%, rgba(10, 11, 13, 0.8) 100%);
+            color: #e5d3b3;
+            border: 1px solid #c8963e;
+            padding: 12px 24px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .map-link-btn:hover {
+            background: #c8963e;
+            color: #0a0b0d;
+            box-shadow: 0 0 20px rgba(200, 150, 62, 0.6);
+            transform: translateY(-2px);
         }
 
         .status-msg {
@@ -292,21 +318,22 @@
             <div class="norse-icon-wrapper">
                 <!-- SVG MJÖLNIR -->
                 <svg class="mjolnir-svg" viewBox="0 0 100 100">
-                    <!-- Rukojeť -->
                     <path d="M50 20 L50 62" stroke-width="4"/>
                     <path d="M46 22 H54 M46 30 H54 M46 38 H54 M46 46 H54" stroke-width="2"/>
-                    <!-- Hlavice kladiva -->
                     <path d="M22 62 L78 62 L85 75 L75 90 L25 90 L15 75 Z" fill="rgba(10, 11, 13, 0.6)" stroke-width="2.5"/>
-                    <!-- Vnitřní rytí a vzory -->
                     <path d="M30 68 L70 68 M28 84 L72 84" stroke-width="1.5"/>
                     <circle cx="50" cy="76" r="4" fill="#c8963e"/>
-                    <!-- Poutko na rukojeti -->
                     <path d="M42 16 C 42 8, 58 8, 58 16 Z" stroke-width="2"/>
                 </svg>
 
                 <!-- PŘESNÝ NÁPIS FOLDJORD (ᚠᛟᛚᛞᛃᛟᚱᛞ) -->
                 <div class="runic-text">ᚠᛟᛚᛞᛃᛟᚱᛞ</div>
             </div>
+
+            <!-- TLAČÍTKO PRO OTEVŘENÍ INTERAKTIVNÍ MAPY -->
+            <a href="map.html" class="map-link-btn">
+                🗺️ [ OPEN_WORLD_MAP ]
+            </a>
 
             <div class="status-msg">[ ARCHIVE_SEALED ]</div>
             <p class="description">
