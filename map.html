@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foldjord // Interactive Map & Fog of War</title>
+    <title>Foldjord // World Map</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Knihovna pro plynulé přibližování a posun -->
     <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
-    
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Runic&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -21,7 +22,7 @@
             position: relative;
         }
 
-        /* TLAČÍTKO ZPĚT */
+        /* TLAČÍTKO ZPĚT DO ARCHIVU */
         .back-btn {
             position: fixed;
             top: 20px; left: 20px;
@@ -37,35 +38,31 @@
             backdrop-filter: blur(4px);
             transition: color 0.3s, border-color 0.3s;
         }
-        .back-btn:hover { color: #c8963e; border-color: #c8963e; }
+        .back-btn:hover { 
+            color: #c8963e; 
+            border-color: #c8963e;
+        }
 
-        /* KONTROLY FOG OF WAR A ZOOMU */
-        .control-panel {
+        /* KONTROLY ZOOMU */
+        .zoom-controls {
             position: fixed;
             bottom: 20px; left: 20px;
             z-index: 100;
-            display: flex; gap: 8px; flex-wrap: wrap;
+            display: flex; gap: 8px;
         }
-        .ctrl-btn {
+        .zoom-btn {
             background: rgba(10, 11, 13, 0.9);
             color: #c8963e;
             border: 1px solid rgba(200, 150, 62, 0.4);
-            padding: 8px 12px;
-            font-size: 12px; cursor: pointer;
+            width: 38px; height: 38px;
+            font-size: 18px; cursor: pointer;
             backdrop-filter: blur(4px);
-            text-transform: uppercase;
-            letter-spacing: 1px;
             display: flex; align-items: center; justify-content: center;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
-        .ctrl-btn:hover {
+        .zoom-btn:hover {
             background: rgba(200, 150, 62, 0.2);
             color: #e5d3b3;
-        }
-        .ctrl-btn.active {
-            background: #a82e2e;
-            color: #fff;
-            border-color: #ff0000;
         }
 
         /* MAPOVÝ KONTEJNER */
@@ -73,9 +70,7 @@
             width: 100vw; height: 100vh;
             cursor: grab;
         }
-        .map-wrapper.drawing-mode {
-            cursor: crosshair !important;
-        }
+        .map-wrapper:active { cursor: grabbing; }
 
         .map-container {
             position: relative;
@@ -85,20 +80,8 @@
         .map-img {
             display: block;
             max-width: none;
-            height: 100vh;
+            height: 100vh; /* Přizpůsobí výšku obrazovce */
             user-select: none;
-        }
-
-        /* FOG OF WAR CANVAS OVERLAY */
-        #fog-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 5;
-            pointer-events: none;
-        }
-        .drawing-mode #fog-canvas {
-            pointer-events: auto;
         }
 
         /* ZNAČKY NA MAPĚ (PINS) */
@@ -138,6 +121,7 @@
             position: absolute; top: 15px; right: 20px;
             background: none; border: none; color: #8c8172;
             font-size: 24px; cursor: pointer;
+            transition: color 0.2s;
         }
         .close-panel:hover { color: #c8963e; }
 
@@ -148,51 +132,67 @@
             border-bottom: 1px solid rgba(200, 150, 62, 0.3);
             padding-bottom: 10px;
         }
-        .info-desc { font-size: 14px; line-height: 1.6; color: #b5a895; }
+        .info-desc { 
+            font-size: 14px; 
+            line-height: 1.6; 
+            color: #b5a895; 
+        }
+
+        /* POMOCNÉ OKÉNO PRO GENEROVÁNÍ SOUŘADNIC */
+        #coords-display {
+            position: fixed; 
+            bottom: 20px; right: 20px; 
+            background: rgba(10, 11, 13, 0.95); 
+            border: 1px solid #c8963e; 
+            color: #e5d3b3; 
+            padding: 12px 18px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            z-index: 100; 
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
 
-    <a href="dnd.html" class="back-btn">&larr; [ ARCHIV ]</a>
+    <a href="dnd.html" class="back-btn">&larr; [ ZPĚT DO ARCHIVU ]</a>
 
-    <!-- OVLÁDACÍ PANELY -->
-    <div class="control-panel">
-        <button class="ctrl-btn" id="mode-toggle">🌫️ [ MLHA: VYPNUTA ]</button>
-        <button class="ctrl-btn" id="reset-fog">🔄 ZAHALIT VŠE</button>
-        <button class="ctrl-btn" id="clear-fog">👁️ ODKRÍT VŠE</button>
-        <button class="ctrl-btn" id="zoom-in">+</button>
-        <button class="ctrl-btn" id="zoom-out">-</button>
-        <button class="ctrl-btn" id="zoom-reset">&#8634;</button>
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoom-in" title="Přiblížit">+</button>
+        <button class="zoom-btn" id="zoom-out" title="Oddálit">-</button>
+        <button class="zoom-btn" id="zoom-reset" title="Obnovit pohled">&#8634;</button>
     </div>
 
-    <!-- OBLAST PRO MAPU, MLHU A ZNAČKY -->
-    <div class="map-wrapper" id="map-wrapper">
+    <!-- OBLAST PRO MAPU A ZNAČKY -->
+    <div class="map-wrapper">
         <div id="panzoom-elem" class="map-container">
-            <img src="Foldjord.jpg" alt="Mapa Foldjord" class="map-img" id="map-img">
+            <img src="Foldjord.jpg" alt="Mapa Foldjord" class="map-img">
 
-            <!-- CANVAS PRO MLHU (FOG OF WAR) -->
-            <canvas id="fog-canvas"></canvas>
+            <!-- ZDE VKLÁDEJ VYGENEROVANÉ PINY -->
+    
+            <div class="pin" style="top: 42.7%; left: 52.0%;" 
+                 onclick="openInfo('Awandia', 'Hlavní město Awandijského království. Jednou za 15 let se zde pořádají zkoušky různých povolání. Vaše dobrodružství začíná zde.')"></div>
 
-            <!-- ZNAČKY (PINY) -->
-            <div class="pin" style="top: 24.3%; left: 32.1%;" 
-                 onclick="openInfo('Kálf', 'Zamrzlé severní souostroví plné ledových obrů.')"></div>
-            <div class="pin" style="top: 48.5%; left: 45.2%;" 
-                 onclick="openInfo('Dynja', 'Centrální přístavní město a srdce obchodu.')"></div>
-            <div class="pin" style="top: 71.2%; left: 78.4%;" 
-                 onclick="openInfo('Lengro', 'Divoký jižní kontinent staré magie.')"></div>
+
         </div>
     </div>
 
-    <!-- INFORMAČNÍ PANEL -->
+    <!-- POSTRANNÍ PANEL S DETAILY -->
     <div class="info-panel" id="info-panel">
         <button class="close-panel" onclick="closeInfo()">&times;</button>
         <h2 class="info-title" id="panel-title">Lokace</h2>
-        <p class="info-desc" id="panel-desc">Vyberte bod na mapě.</p>
+        <p class="info-desc" id="panel-desc">Vyberte bod na mapě pro zobrazení detailů.</p>
+    </div>
+
+    <!-- POMOCNÝ UKAZATEL SOUŘADNIC -->
+    <div id="coords-display">
+        Klikni kamkoliv na mapu pro získání souřadnic PINu
     </div>
 
     <script>
-        // 1. PAN & ZOOM INICIALIZACE
-        const wrapper = document.getElementById('map-wrapper');
+        // 1. INICIALIZACE PAN & ZOOM
         const elem = document.getElementById('panzoom-elem');
         const panzoom = Panzoom(elem, {
             maxScale: 5,
@@ -200,80 +200,16 @@
             contain: 'outside'
         });
 
-        wrapper.addEventListener('wheel', panzoom.zoomWithWheel);
+        // Ovládání kolečkem myši
+        elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
 
+        // Tlačítka
         document.getElementById('zoom-in').addEventListener('click', panzoom.zoomIn);
         document.getElementById('zoom-out').addEventListener('click', panzoom.zoomOut);
         document.getElementById('zoom-reset').addEventListener('click', panzoom.reset);
 
-        // 2. FOG OF WAR ENGINE
-        const img = document.getElementById('map-img');
-        const canvas = document.getElementById('fog-canvas');
-        const ctx = canvas.getContext('2d');
-        let isDrawingMode = false;
-        let isDrawing = false;
-
-        function initFog() {
-            canvas.width = img.naturalWidth || img.clientWidth;
-            canvas.height = img.naturalHeight || img.clientHeight;
-            resetFog();
-        }
-
-        function resetFog() {
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(10, 11, 13, 0.95)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function clearFog() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        if (img.complete) { initFog(); } else { img.onload = initFog; }
-
-        // PŘEPÍNÁNÍ REŽIMU ODKRÝVÁNÍ / POSUNU MAPY
-        const modeBtn = document.getElementById('mode-toggle');
-        modeBtn.addEventListener('click', () => {
-            isDrawingMode = !isDrawingMode;
-            if (isDrawingMode) {
-                panzoom.disable();
-                wrapper.classList.add('drawing-mode');
-                modeBtn.classList.add('active');
-                modeBtn.textContent = '✏️ [ ODKRÝVÁNÍ MLHY ]';
-            } else {
-                panzoom.enable();
-                wrapper.classList.remove('drawing-mode');
-                modeBtn.classList.remove('active');
-                modeBtn.textContent = '🌫️ [ MLHA: VYPNUTA ]';
-            }
-        });
-
-        document.getElementById('reset-fog').addEventListener('click', resetFog);
-        document.getElementById('clear-fog').addEventListener('click', clearFog);
-
-        // KRESLENÍ / MAZÁNÍ MLHY
-        function reveal(e) {
-            if (!isDrawing || !isDrawingMode) return;
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 60, 0, Math.PI * 2, false);
-            ctx.fill();
-        }
-
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; reveal(e); });
-        canvas.addEventListener('mousemove', reveal);
-        window.addEventListener('mouseup', () => { isDrawing = false; });
-
-        // 3. POSTRANNÍ PANEL
+        // 2. FUNKCE PRO POSTRANNÍ PANEL
         function openInfo(title, desc) {
-            if (isDrawingMode) return; // V režimu odkrývání neumísťovat panely
             document.getElementById('panel-title').textContent = title;
             document.getElementById('panel-desc').textContent = desc;
             document.getElementById('info-panel').classList.add('active');
@@ -282,6 +218,27 @@
         function closeInfo() {
             document.getElementById('info-panel').classList.remove('active');
         }
+
+        // 3. GENERÁTOR SOUŘADNIC (POMOCNÍK PRO PINOVÁNÍ)
+        const mapImg = document.querySelector('.map-img');
+        const coordsDisplay = document.getElementById('coords-display');
+
+        mapImg.addEventListener('click', function(e) {
+            const rect = mapImg.getBoundingClientRect();
+
+            // Výpočet pozice v %
+            const xPercent = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
+            const yPercent = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
+
+            const generatedCode = `<div class="pin" style="top: ${yPercent}%; left: ${xPercent}%;" onclick="openInfo('NÁZEV', 'POPIS')"></div>`;
+
+            // Zobrazení na obrazovce
+            coordsDisplay.innerHTML = `<strong>Top:</strong> ${yPercent}% | <strong>Left:</strong> ${xPercent}%<br><span style="color:#c8963e;">Kód zkopírován do F12 konzole</span>`;
+
+            // Výpis do konzole prohlížeče
+            console.log("KÓD PRO VLOŽENÍ:");
+            console.log(generatedCode);
+        });
     </script>
 </body>
 </html>
