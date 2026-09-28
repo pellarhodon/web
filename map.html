@@ -169,5 +169,35 @@
             document.getElementById('info-panel').classList.remove('active');
         }
     </script>
+
+    <!-- POMOCNÉ TLAČÍTKO / UKAZATEL SOUŘADNIC -->
+<div id="coords-display" style="position: fixed; bottom: 20px; right: 20px; background: rgba(10,11,13,0.95); border: 1px solid #c8963e; color: #e5d3b3; padding: 10px 15px; font-family: monospace; font-size: 12px; z-index: 1000; pointer-events: none;">
+    Klikni na mapu pro získání souřadnic PINu
+</div>
+
+<script>
+    const mapImg = document.querySelector('.map-img');
+    const coordsDisplay = document.getElementById('coords-display');
+
+    mapImg.addEventListener('click', function(e) {
+        // Zjištění rozměrů obrázku
+        const rect = mapImg.getBoundingClientRect();
+        
+        // Výpočet pozice kliknutí v procentech
+        const xPercent = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
+        const yPercent = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
+
+        // Vygenerovaný kód PINu
+        const generatedCode = `<div class="pin" style="top: ${yPercent}%; left: ${xPercent}%;" onclick="openInfo('NÁZEV', 'POPIS')"></div>`;
+
+        // Zobrazení v pomocném okénku
+        coordsDisplay.innerHTML = `<strong>Top:</strong> ${yPercent}% | <strong>Left:</strong> ${xPercent}%<br><span style="color:#c8963e;">Kód zkopírován do konzole (F12)</span>`;
+
+        // Výpis kódů do vývojářské konzole (F12)
+        console.log(generatedCode);
+    });
+</script>
+
+    
 </body>
 </html>
