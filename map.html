@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foldjord // Interactive Map</title>
+    <title>Foldjord // World Map</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <!-- Knihovna pro přibližování a posun -->
+    <!-- Knihovna pro plynulé přibližování a posun -->
     <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Courier+Prime&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Runic&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,9 +19,10 @@
             color: #b5a895;
             font-family: 'Courier Prime', monospace;
             overflow: hidden;
+            position: relative;
         }
 
-        /* TLAČÍTKO ZPĚT */
+        /* TLAČÍTKO ZPĚT DO ARCHIVU */
         .back-btn {
             position: fixed;
             top: 20px; left: 20px;
@@ -34,8 +35,13 @@
             font-size: 12px;
             letter-spacing: 2px;
             text-transform: uppercase;
+            backdrop-filter: blur(4px);
+            transition: color 0.3s, border-color 0.3s;
         }
-        .back-btn:hover { color: #c8963e; }
+        .back-btn:hover { 
+            color: #c8963e; 
+            border-color: #c8963e;
+        }
 
         /* KONTROLY ZOOMU */
         .zoom-controls {
@@ -48,8 +54,15 @@
             background: rgba(10, 11, 13, 0.9);
             color: #c8963e;
             border: 1px solid rgba(200, 150, 62, 0.4);
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             font-size: 18px; cursor: pointer;
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        .zoom-btn:hover {
+            background: rgba(200, 150, 62, 0.2);
+            color: #e5d3b3;
         }
 
         /* MAPOVÝ KONTEJNER */
@@ -68,46 +81,78 @@
             display: block;
             max-width: none;
             height: 100vh; /* Přizpůsobí výšku obrazovce */
+            user-select: none;
         }
 
         /* ZNAČKY NA MAPĚ (PINS) */
         .pin {
             position: absolute;
-            width: 24px; height: 24px;
+            width: 20px; height: 20px;
             background: #a82e2e;
             border: 2px solid #c8963e;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(200, 150, 62, 0.8);
-            transition: transform 0.2s;
+            box-shadow: 0 0 12px rgba(200, 150, 62, 0.9);
+            transition: transform 0.2s ease, background 0.2s ease;
+            z-index: 10;
         }
-        .pin:hover { transform: translate(-50%, -50%) scale(1.3); }
+        .pin:hover { 
+            transform: translate(-50%, -50%) scale(1.4); 
+            background: #c8963e;
+        }
 
         /* POSTRANNÍ INFORMAČNÍ PANEL */
         .info-panel {
             position: fixed;
-            top: 0; right: -350px;
-            width: 320px; height: 100vh;
+            top: 0; right: -360px;
+            width: 340px; height: 100vh;
             background: rgba(12, 14, 18, 0.95);
             border-left: 2px solid #c8963e;
-            padding: 30px 20px;
+            padding: 40px 25px;
             z-index: 200;
             transition: right 0.4s ease;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
         }
         .info-panel.active { right: 0; }
 
         .close-panel {
-            position: absolute; top: 15px; right: 15px;
+            position: absolute; top: 15px; right: 20px;
             background: none; border: none; color: #8c8172;
-            font-size: 20px; cursor: pointer;
+            font-size: 24px; cursor: pointer;
+            transition: color 0.2s;
         }
+        .close-panel:hover { color: #c8963e; }
+
         .info-title {
             font-family: 'Cinzel', serif;
-            color: #e5d3b3; font-size: 22px; margin-bottom: 15px;
+            color: #e5d3b3; font-size: 24px; 
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(200, 150, 62, 0.3);
+            padding-bottom: 10px;
         }
-        .info-desc { font-size: 13px; line-height: 1.6; color: #8c8172; }
+        .info-desc { 
+            font-size: 14px; 
+            line-height: 1.6; 
+            color: #b5a895; 
+        }
+
+        /* POMOCNÉ OKÉNO PRO GENEROVÁNÍ SOUŘADNIC */
+        #coords-display {
+            position: fixed; 
+            bottom: 20px; right: 20px; 
+            background: rgba(10, 11, 13, 0.95); 
+            border: 1px solid #c8963e; 
+            color: #e5d3b3; 
+            padding: 12px 18px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            z-index: 100; 
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -115,9 +160,9 @@
     <a href="dnd.html" class="back-btn">&larr; [ ZPĚT DO ARCHIVU ]</a>
 
     <div class="zoom-controls">
-        <button class="zoom-btn" id="zoom-in">+</button>
-        <button class="zoom-btn" id="zoom-out">-</button>
-        <button class="zoom-btn" id="zoom-reset">&#8634;</button>
+        <button class="zoom-btn" id="zoom-in" title="Přiblížit">+</button>
+        <button class="zoom-btn" id="zoom-out" title="Oddálit">-</button>
+        <button class="zoom-btn" id="zoom-reset" title="Obnovit pohled">&#8634;</button>
     </div>
 
     <!-- OBLAST PRO MAPU A ZNAČKY -->
@@ -125,12 +170,15 @@
         <div id="panzoom-elem" class="map-container">
             <img src="Foldjord.jpg" alt="Mapa Foldjord" class="map-img">
 
-            <!-- PŘÍKLADY ZNAČEK (Pozice v procentech X a Y) -->
-            <div class="pin" style="top: 35%; left: 45%;" 
-                 onclick="openInfo('Kálf', 'Severní zamrzlé úseky, kde přežívají jen ti nejodolnější.')"></div>
-                 
-            <div class="pin" style="top: 60%; left: 70%;" 
-                 onclick="openInfo('Lengro', 'Jižní souostroví známé obchodními trasami a piráty.')"></div>
+            <!-- ZDE VKLÁDEJ VYGENEROVANÉ PINY -->
+            <div class="pin" style="top: 24.3%; left: 32.1%;" 
+                 onclick="openInfo('Kálf', 'Zamrzlé severní souostroví plné ledových obrů a starobylých ruin.')"></div>
+
+            <div class="pin" style="top: 48.5%; left: 45.2%;" 
+                 onclick="openInfo('Dynja', 'Centrální přístavní město a srdce obchodu celého kontinentu.')"></div>
+
+            <div class="pin" style="top: 71.2%; left: 78.4%;" 
+                 onclick="openInfo('Lengro', 'Divoký jižní kontinent opředený tajemstvími staré magie.')"></div>
         </div>
     </div>
 
@@ -138,27 +186,32 @@
     <div class="info-panel" id="info-panel">
         <button class="close-panel" onclick="closeInfo()">&times;</button>
         <h2 class="info-title" id="panel-title">Lokace</h2>
-        <p class="info-desc" id="panel-desc">Vyberte bod na mapě.</p>
+        <p class="info-desc" id="panel-desc">Vyberte bod na mapě pro zobrazení detailů.</p>
+    </div>
+
+    <!-- POMOCNÝ UKAZATEL SOUŘADNIC -->
+    <div id="coords-display">
+        Klikni kamkoliv na mapu pro získání souřadnic PINu
     </div>
 
     <script>
-        // INICIALIZACE POSUNU A ZOOMU
+        // 1. INICIALIZACE PAN & ZOOM
         const elem = document.getElementById('panzoom-elem');
         const panzoom = Panzoom(elem, {
-            maxScale: 4,
+            maxScale: 5,
             minScale: 1,
             contain: 'outside'
         });
 
-        // Ovládání kolečkem
+        // Ovládání kolečkem myši
         elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
 
-        // Ovládání tlačítky
+        // Tlačítka
         document.getElementById('zoom-in').addEventListener('click', panzoom.zoomIn);
         document.getElementById('zoom-out').addEventListener('click', panzoom.zoomOut);
         document.getElementById('zoom-reset').addEventListener('click', panzoom.reset);
 
-        // FUNKCE PRO PANEL
+        // 2. FUNKCE PRO POSTRANNÍ PANEL
         function openInfo(title, desc) {
             document.getElementById('panel-title').textContent = title;
             document.getElementById('panel-desc').textContent = desc;
@@ -168,36 +221,27 @@
         function closeInfo() {
             document.getElementById('info-panel').classList.remove('active');
         }
+
+        // 3. GENERÁTOR SOUŘADNIC (POMOCNÍK PRO PINOVÁNÍ)
+        const mapImg = document.querySelector('.map-img');
+        const coordsDisplay = document.getElementById('coords-display');
+
+        mapImg.addEventListener('click', function(e) {
+            const rect = mapImg.getBoundingClientRect();
+            
+            // Výpočet pozice v %
+            const xPercent = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
+            const yPercent = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
+
+            const generatedCode = `<div class="pin" style="top: ${yPercent}%; left: ${xPercent}%;" onclick="openInfo('NÁZEV', 'POPIS')"></div>`;
+
+            // Zobrazení na obrazovce
+            coordsDisplay.innerHTML = `<strong>Top:</strong> ${yPercent}% | <strong>Left:</strong> ${xPercent}%<br><span style="color:#c8963e;">Kód zkopírován do F12 konzole</span>`;
+
+            // Výpis do konzole prohlížeče
+            console.log("KÓD PRO VLOŽENÍ:");
+            console.log(generatedCode);
+        });
     </script>
-
-    <!-- POMOCNÉ TLAČÍTKO / UKAZATEL SOUŘADNIC -->
-<div id="coords-display" style="position: fixed; bottom: 20px; right: 20px; background: rgba(10,11,13,0.95); border: 1px solid #c8963e; color: #e5d3b3; padding: 10px 15px; font-family: monospace; font-size: 12px; z-index: 1000; pointer-events: none;">
-    Klikni na mapu pro získání souřadnic PINu
-</div>
-
-<script>
-    const mapImg = document.querySelector('.map-img');
-    const coordsDisplay = document.getElementById('coords-display');
-
-    mapImg.addEventListener('click', function(e) {
-        // Zjištění rozměrů obrázku
-        const rect = mapImg.getBoundingClientRect();
-        
-        // Výpočet pozice kliknutí v procentech
-        const xPercent = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
-        const yPercent = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
-
-        // Vygenerovaný kód PINu
-        const generatedCode = `<div class="pin" style="top: ${yPercent}%; left: ${xPercent}%;" onclick="openInfo('NÁZEV', 'POPIS')"></div>`;
-
-        // Zobrazení v pomocném okénku
-        coordsDisplay.innerHTML = `<strong>Top:</strong> ${yPercent}% | <strong>Left:</strong> ${xPercent}%<br><span style="color:#c8963e;">Kód zkopírován do konzole (F12)</span>`;
-
-        // Výpis kódů do vývojářské konzole (F12)
-        console.log(generatedCode);
-    });
-</script>
-
-    
 </body>
 </html>
