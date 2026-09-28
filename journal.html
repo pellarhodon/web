@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foldjord // Chronicle & Journal</title>
+    <title>Foldjord // Kronika dobrodružství</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
@@ -28,9 +28,8 @@
             overflow-y: auto;
             position: relative;
 
-            /* ATMOSFÉRICKÉ POZADÍ PERGAMENU A MAPY */
             background-image: 
-                linear-gradient(rgba(10, 11, 13, 0.75), rgba(10, 11, 13, 0.88)),
+                linear-gradient(rgba(10, 11, 13, 0.78), rgba(10, 11, 13, 0.90)),
                 url('Foldjord.jpg');
             background-size: cover;
             background-position: center center;
@@ -38,7 +37,7 @@
             background-attachment: fixed;
         }
 
-        /* HLAVNÍ NAVIGACE ZPĚT */
+        /* NAVIGATION / BACK LINK */
         .nav-header {
             width: 100%;
             max-width: 800px;
@@ -70,7 +69,7 @@
             transform: translateX(-4px);
         }
 
-        /* HLAVIČKA KRONIKY */
+        /* MAIN HEADER */
         .main-container {
             width: 100%;
             max-width: 800px;
@@ -87,8 +86,8 @@
         .journal-header {
             text-align: center;
             position: relative;
-            background: rgba(12, 14, 18, 0.88);
-            padding: 25px 40px;
+            background: rgba(12, 14, 18, 0.90);
+            padding: 30px 40px;
             border-radius: 2px;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -96,15 +95,15 @@
             border-bottom: 1px solid #232730;
             border-left: 1px solid rgba(200, 150, 62, 0.2);
             border-right: 1px solid rgba(200, 150, 62, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
             width: 100%;
         }
 
         h1 {
             font-family: 'Cinzel', serif;
-            font-size: clamp(32px, 8vw, 56px);
+            font-size: clamp(28px, 6vw, 48px);
             font-weight: 900;
-            letter-spacing: 8px; 
+            letter-spacing: 6px; 
             color: #e5d3b3;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(200, 150, 62, 0.3);
@@ -113,31 +112,31 @@
 
         .runic-sub {
             font-family: 'Noto Sans Runic', 'Cinzel', serif;
-            font-size: 18px;
-            letter-spacing: 6px;
+            font-size: 20px;
+            letter-spacing: 8px;
             color: #c8963e;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .subtitle {
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 4px;
             color: #a82e2e;
             text-transform: uppercase;
             font-weight: bold;
         }
 
-        /* SEZNAM SEZENÍ / KRONIKA (PERGAMENOVÉ KARTY) */
+        /* CHRONICLE ENTRIES */
         .chronicle-list {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 30px;
         }
 
         .entry-card {
             width: 100%;
-            background: rgba(16, 18, 22, 0.9);
+            background: rgba(14, 16, 20, 0.92);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border-left: 3px solid #c8963e;
@@ -145,8 +144,9 @@
             border-bottom: 1px solid rgba(0,0,0,0.8);
             border-right: 1px solid rgba(200, 150, 62, 0.15);
             border-radius: 2px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            padding: 35px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.85);
+            position: relative;
             transition: transform 0.3s ease, border-left-color 0.3s ease;
         }
 
@@ -159,16 +159,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px dashed rgba(200, 150, 62, 0.3);
+            border-bottom: 1px dashed rgba(200, 150, 62, 0.25);
             padding-bottom: 12px;
-            margin-bottom: 18px;
-            font-size: 12px;
+            margin-bottom: 20px;
+            font-size: 11px;
             letter-spacing: 2px;
             color: #c8963e;
             text-transform: uppercase;
         }
 
-        .entry-number {
+        .saga-tag {
             font-weight: bold;
             color: #a82e2e;
         }
@@ -177,26 +177,37 @@
             font-family: 'Cinzel', serif;
             font-size: 22px;
             color: #e5d3b3;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             letter-spacing: 2px;
         }
 
         .entry-body {
             font-size: 14px;
-            line-height: 1.8;
+            line-height: 1.85;
             color: #b5a895;
             text-align: justify;
         }
 
         .entry-body p {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .entry-body p:last-child {
             margin-bottom: 0;
         }
 
-        .highlight-text {
+        .first-letter {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            float: left;
+            line-height: 28px;
+            padding-top: 4px;
+            padding-right: 8px;
+            color: #c8963e;
+            font-weight: bold;
+        }
+
+        .realm-highlight {
             color: #e5d3b3;
             font-weight: bold;
         }
@@ -232,44 +243,44 @@
     <main class="main-container">
         <!-- HLAVIČKA DENÍKU -->
         <section class="journal-header">
-            <h1>KRONIKA FOLDJORDU</h1>
+            <h1>KRONIKA ZEMÍ FOLDJORDU</h1>
             <div class="runic-sub">ᚠᛟᛚᛞᛃᛟᚱᛞ</div>
-            <div class="subtitle">ZÁZNAMY SEZENÍ // CHRONICLES OF THE REALM</div>
+            <div class="subtitle">SÁGY // DENÍK VÝPRAVY</div>
         </section>
 
-        <!-- SEZNAM SEZENÍ -->
+        <!-- SEZNAM KAPITOL KRONIKY (CHRONOLOGICKY OD NEJSTARŠÍ) -->
         <section class="chronicle-list">
 
-            <!-- ZÁPIS: SEZENÍ 02 -->
+            <!-- KAPITOLA I -->
             <article class="entry-card">
                 <div class="entry-meta">
-                    <span class="entry-number">[ SEZENÍ #02 ]</span>
-                    <span class="entry-date">24. ŘÍJEN 2026</span>
+                    <span class="saga-tag">[ KAPITOLA I. // SÁGA PRVNÍ ]</span>
+                    <span class="entry-date">NOC DLOUHÝCH STÍNŮ</span>
                 </div>
-                <h2 class="entry-title">Stíny nad prastarým přístavem</h2>
+                <h2 class="entry-title">Přísaha na rozbouřeném moři</h2>
                 <div class="entry-body">
                     <p>
-                        Družina dorazila do zamrzlého přístavu v oblasti <span class="highlight-text">Kálf</span>[cite: 1]. Místní obyvatelé hovoří o podivných světlech objevujících se na pobřežních útesech a zmizení několika rybářských lodí.
+                        <span class="first-letter">P</span>rvní kapitola našich osudů byla zapsána v krvi a soli. Osud svedl naši skupinu dohromady na palubě stěžňové galéry, která se prodírala skrz rozbouřené vody světa <span class="realm-highlight">Foldjord</span>.
                     </p>
                     <p>
-                        Po krátkém vyšetřování v místní krčmě se skupina rozhodla vydat ke starému majáku, kde odhalila stopy starobylé magie spojené s kultem padlého krále.
+                        Noc přinesla nejen hrozivou bouři, ale i tvory z temných hlubin. V tu noc byla složena první společná přísaha — nepustit zbraň z ruky, dokud záhada těchto zemí nebude odhalena.
                     </p>
                 </div>
             </article>
 
-            <!-- ZÁPIS: SEZENÍ 01 -->
+            <!-- KAPITOLA II -->
             <article class="entry-card">
                 <div class="entry-meta">
-                    <span class="entry-number">[ SEZENÍ #01 ]</span>
-                    <span class="entry-date">10. ŘÍJEN 2026</span>
+                    <span class="saga-tag">[ KAPITOLA II. // SÁGA PRVNÍ ]</span>
+                    <span class="entry-date">DOBA MRAZIVÝCH VĚTRŮ</span>
                 </div>
-                <h2 class="entry-title">Setkání v mlze</h2>
+                <h2 class="entry-title">Stíny nad přístavem Kálf</h2>
                 <div class="entry-body">
                     <p>
-                        První shromáždění hrdinů v nevlídných zemích světa <span class="highlight-text">Foldjord</span>[cite: 1]. Osud je svedl dohromady na palubě obchodní galéry směřující na jižní souostroví.
+                        <span class="first-letter">K</span>dyž se mlha konečně rozestoupila, spatřili jsme zamrzlé pobřeží <span class="realm-highlight">Kálf</span>. Místní rybáři hovoří šeptem o podivných temných zářích vystupujících z mořských hlubin a o lodích, které vypluly, ale zpět se vrátily jen jako prázdné vraky obalené ledem.
                     </p>
                     <p>
-                        Prudká bouře a nečekaný útok mořských stvůr přinutily družinu spojit síly a zachránit zbytek posádky před jistou záhubou.
+                        Cesta nás zavedla ke starému kamennému majáku na útesech. Místo světla pro námořníky tam však hořel neposvátný zelený oheň a v jeho záři stály postavy v zahalených kápích...
                     </p>
                 </div>
             </article>
@@ -278,7 +289,7 @@
     </main>
 
     <footer class="footer-sig">
-        DM_LOGS // <span class="highlight">PELLARHODON</span>
+        CHRONICLES // <span class="highlight">PELLARHODON</span>
     </footer>
 
 </body>
