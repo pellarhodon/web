@@ -56,12 +56,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 35px;
+            gap: 25px;
             padding: 0 15px;
         }
 
         .interactive-node {
-            opacity: 0.4;
+            opacity: 0.5;
             transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.6s ease;
         }
         
@@ -123,6 +123,20 @@
             color: #cc0000;
         }
 
+        /* KO-FI CONTAINER */
+        .kofi-widget-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 8px;
+            background: rgba(15, 0, 0, 0.9);
+            border: 1px solid #330000;
+            border-top: 1px solid #660000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+
         /* R6 TRACKER OVERLAY CONTAINER */
         .r6-overlay-wrapper {
             width: 100%;
@@ -166,209 +180,4 @@
             border-left: 4px solid #220000; 
             padding-left: 25px; 
             text-align: left; 
-            transition: border-color 0.6s; 
-        }
-        
-        #spotify-box:hover { 
-            border-left-color: #cc0000; 
-        }
-        
-        .cursor { 
-            animation: blink 1.2s step-end infinite; 
-            color: #770000; 
-        }
-        
-        @keyframes blink { 
-            50% { opacity: 0; } 
-        }
-
-        .wigle-frame img { 
-            border: 0; 
-            max-width: 220px; 
-            filter: grayscale(1) brightness(0.3); 
-            transition: filter 0.8s; 
-        }
-        
-        .wigle-frame:hover img { 
-            filter: grayscale(0) brightness(0.9); 
-        }
-        
-        a { 
-            text-decoration: none; 
-            color: inherit; 
-        }
-    </style>
-</head>
-<body>
-
-    <header class="header">
-        <h1>PELLARHODON</h1>
-    </header>
-
-    <footer class="footer">
-        <!-- D&D CAMPAIGN BUTTON WITH MJÖLNIR & RUNES -->
-        <a href="dnd.html" class="interactive-node dnd-node-btn">
-            <svg class="mjolnir-btn-icon" viewBox="0 0 100 100">
-                <path d="M50 20 L50 62" stroke-width="5"/>
-                <path d="M46 22 H54 M46 30 H54 M46 38 H54 M46 46 H54" stroke-width="3"/>
-                <path d="M22 62 L78 62 L85 75 L75 90 L25 90 L15 75 Z" stroke-width="3"/>
-                <circle cx="50" cy="76" r="4" fill="#cc0000"/>
-                <path d="M42 16 C 42 8, 58 8, 58 16 Z" stroke-width="3"/>
-            </svg>
-            <span>[ CAMPAIGN // <span class="runic-btn-text">ᚠᛟᛚᛞᛃᛟᚱᛞ</span> ]</span>
-        </a>
-
-        <!-- R6 OVERLAY -->
-        <div class="interactive-node r6-overlay-wrapper">
-            <iframe 
-                src="https://tracker.gg/overlays/overlay/f589ebda-3d70-4814-9afb-f419744426f2" 
-                class="r6-tracker-frame" 
-                title="Rainbow Six Siege Tracker Overlay">
-            </iframe>
-        </div>
-
-        <!-- TERMINAL INFO -->
-        <div class="terminal-info interactive-node">
-            <div id="spotify-box">
-                <div class="line"><span class="label">AUDIO_STREAM:</span> <span id="track-name" class="value">SIGNAL_LOST</span></div>
-                <div class="line"><span class="label">STATION_SRC:</span> <span id="track-artist" class="value">OFFLINE</span></div>
-            </div>
-
-            <div class="line">
-                <span class="label">[BINARY_TIME]:</span> <span id="binary-clock" class="value">000000000000000000</span>
-            </div>
-
-            <div class="line">
-                <span class="label">[SYSTEM_DB]:</span> STEAM_VAL: <span class="value">1927€</span> <span class="separator">//</span> HITS: <span id="visits" class="value">...</span>
-            </div>
-
-            <div class="line">
-                <span class="label">[VERSION_CTRL]:</span> LAST_PUSH: <span id="git-date" class="value">SYNCING...</span> <span class="separator">//</span> <span id="git-msg" class="value">...</span>
-            </div>
-
-            <div class="line">
-                <span class="label">[STATUS]:</span> UPTIME: <span id="uptime" class="value">0D_0H_0M_0S</span><span class="cursor">_</span>
-            </div>
-        </div>
-
-        <a href="https://wigle.net" class="wigle-frame interactive-node" target="_blank" rel="noopener noreferrer">
-            <img src="https://wigle.net/bi/GlBn9ccbiSGDMDb1tTQ_jg.png" alt="WiGLE Network Stats">
-        </a>
-    </footer>
-
-    <script>
-        // CONFIG
-        const GITHUB_USER = "pellarhodon";
-        const REPO = "pellarhodon.github.io";
-        const DISCORD_ID = "583764327459192872";
-        const START_DATE = new Date(2026, 0, 21).getTime();
-
-        // DOM elements cache
-        const binaryClockEl = document.getElementById('binary-clock');
-        const gitDateEl = document.getElementById('git-date');
-        const gitMsgEl = document.getElementById('git-msg');
-        const visitsEl = document.getElementById('visits');
-        const trackNameEl = document.getElementById('track-name');
-        const trackArtistEl = document.getElementById('track-artist');
-        const uptimeEl = document.getElementById('uptime');
-
-        // 1. BINARY CLOCK
-        function updateBinaryClock() {
-            const now = new Date();
-            const h = now.getHours().toString(2).padStart(6, '0');
-            const m = now.getMinutes().toString(2).padStart(6, '0');
-            const s = now.getSeconds().toString(2).padStart(6, '0');
-            binaryClockEl.textContent = h + m + s;
-        }
-
-        // 2. GITHUB FETCH (WITH SMART CACHE)
-        async function fetchGit() {
-            const cachedDate = localStorage.getItem('git_last_date');
-            const cachedMsg = localStorage.getItem('git_last_msg');
-
-            if (cachedDate) {
-                gitDateEl.textContent = cachedDate;
-                gitMsgEl.textContent = cachedMsg;
-            }
-
-            try {
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
-                
-                if (res.status === 403 || res.status === 429) {
-                    console.warn("GitHub API Limit hit. Using cached data.");
-                    return; 
-                }
-
-                if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
-
-                const data = await res.json();
-                const lastCommit = data[0];
-                const date = new Date(lastCommit.commit.author.date);
-                const formattedDate = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
-                const msg = lastCommit.commit.message.toUpperCase().substring(0, 15) + "...";
-
-                localStorage.setItem('git_last_date', formattedDate);
-                localStorage.setItem('git_last_msg', msg);
-
-                gitDateEl.textContent = formattedDate;
-                gitMsgEl.textContent = msg;
-            } catch (e) { 
-                if (!cachedDate) gitDateEl.textContent = "LIMIT_WAIT"; 
-            }
-        }
-
-        // 3. VISIT COUNTER
-        async function updateVisits() {
-            try {
-                const res = await fetch(`https://api.counterapi.com/v1/pellarhodon_github_io/visits/up`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                visitsEl.textContent = data.count.toLocaleString();
-            } catch (e) { 
-                visitsEl.textContent = "OFFLINE"; 
-            }
-        }
-
-        // 4. LANYARD (SPOTIFY)
-        async function fetchLanyard() {
-            try {
-                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
-                if (!res.ok) throw new Error();
-                const { data } = await res.json();
-                if (data.listening_to_spotify && data.spotify) {
-                    trackNameEl.textContent = data.spotify.song.toUpperCase();
-                    trackArtistEl.textContent = data.spotify.artist.toUpperCase();
-                } else {
-                    trackNameEl.textContent = "STATION_IDLE";
-                    trackArtistEl.textContent = "NO_AUDIO_FEED";
-                }
-            } catch (e) { 
-                console.log("Lanyard error"); 
-            }
-        }
-
-        // 5. UPTIME
-        function updateUptime() {
-            const now = Date.now();
-            const diff = Math.max(0, now - START_DATE);
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            uptimeEl.textContent = `${d}D_${h}H_${m}M_${s}S`;
-        }
-
-        // LOOPS
-        setInterval(fetchLanyard, 5000);
-        setInterval(updateUptime, 1000);
-        setInterval(updateBinaryClock, 1000);
-        
-        // INITIALIZE
-        fetchLanyard(); 
-        updateUptime();
-        updateVisits(); 
-        updateBinaryClock();
-        fetchGit();
-    </script>
-</body>
-</html>
+            transition: border-color
