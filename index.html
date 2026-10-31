@@ -7,8 +7,6 @@
     <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+Runic&display=swap');
-
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -18,7 +16,7 @@
         body, html {
             width: 100%; 
             min-height: 100vh;
-            background-color: #000; 
+            background-color: #000000; 
             color: #cc0000;
             font-family: 'Courier New', Courier, monospace;
             display: flex; 
@@ -36,8 +34,8 @@
         }
         
         h1 {
-            font-size: clamp(40px, 12vw, 110px);
-            letter-spacing: 25px; 
+            font-size: clamp(32px, 10vw, 90px);
+            letter-spacing: 15px; 
             color: #1a0000;
             text-transform: uppercase;
             animation: slowPulse 8s ease-in-out infinite;
@@ -56,13 +54,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
+            gap: 20px;
             padding: 0 15px;
         }
 
         .interactive-node {
-            opacity: 0.5;
-            transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.6s ease;
+            opacity: 0.75;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
         
         .interactive-node:hover {
@@ -70,69 +68,53 @@
             transform: scale(1.02);
         }
 
-        /* DND BUTTON DESIGN WITH MJÖLNIR & RUNES */
+        /* DND BUTTON */
         .dnd-node-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             padding: 12px 20px;
-            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
+            background: rgba(15, 0, 0, 0.95);
+            border: 1px solid #330000;
             border-top: 2px solid #cc0000;
-            border-bottom: 1px solid #220000;
-            border-left: 1px solid rgba(204, 0, 0, 0.2);
-            border-right: 1px solid rgba(204, 0, 0, 0.2);
             border-radius: 2px;
             color: #cc0000;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 3px;
+            font-size: 13px;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            text-decoration: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             cursor: pointer;
         }
 
         .dnd-node-btn:hover {
-            box-shadow: 0 0 15px rgba(204, 0, 0, 0.3);
             border-top-color: #ff0000;
+            color: #ff3333;
         }
 
         .mjolnir-btn-icon {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: none;
             stroke: #cc0000;
             stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: transform 0.4s ease, filter 0.4s ease;
         }
 
-        .dnd-node-btn:hover .mjolnir-btn-icon {
-            transform: translateY(-2px);
-            filter: drop-shadow(0 0 5px #cc0000);
-        }
-
-        .runic-btn-text {
-            font-family: 'Noto Sans Runic', 'Courier New', monospace;
-            font-size: 16px;
-            letter-spacing: 4px;
-            color: #cc0000;
-        }
-
-        /* KO-FI DIRECT BUTTON STYLING */
+        /* KO-FI BUTTON */
         .kofi-direct-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             padding: 12px 20px;
-            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
+            background: rgba(15, 0, 0, 0.95);
             border: 1px solid #330000;
             border-top: 2px solid #cc0000;
             border-radius: 2px;
@@ -144,32 +126,108 @@
             text-transform: uppercase;
             text-decoration: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            cursor: pointer;
         }
 
         .kofi-direct-btn:hover {
-            box-shadow: 0 0 15px rgba(204, 0, 0, 0.3);
             border-top-color: #ff0000;
             color: #ff3333;
         }
 
         .kofi-svg-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: #cc0000;
-            transition: fill 0.3s ease;
         }
 
-        .kofi-direct-btn:hover .kofi-svg-icon {
-            fill: #ff3333;
-        }
-
-        /* R6 TRACKER OVERLAY CONTAINER */
+        /* R6 OVERLAY CONTAINER */
         .r6-overlay-wrapper {
             width: 100%;
-            max-width: 500px;
-            height: 150px;
-            background: linear-gradient(135deg, rgba(15,0,0,0.98) 0%, rgba(30,0,0,0.95) 100%);
+            max-width: 480px;
+            height: 140px;
+            background: rgba(15, 0, 0, 0.95);
+            border: 1px solid #330000;
             border-top: 2px solid #cc0000;
-            border-bottom: 1px solid #220000;
-            border
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .r6-tracker-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* TERMINAL STATS */
+        .terminal-info { 
+            text-align: center; 
+        }
+        
+        .line { 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            margin: 8px 0; 
+            letter-spacing: 2px; 
+            word-break: break-word;
+        }
+        
+        .label { color: #660000; }
+        .value { color: #cc0000; font-weight: bold; }
+        .separator { color: #330000; margin: 0 10px; }
+        
+        #spotify-box { 
+            margin: 12px 0; 
+            border-left: 3px solid #330000; 
+            padding-left: 18px; 
+            text-align: left; 
+        }
+        
+        .cursor { 
+            animation: blink 1.2s step-end infinite; 
+            color: #990000; 
+        }
+        
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
+
+        .wigle-frame img { 
+            border: 0; 
+            max-width: 200px; 
+            filter: grayscale(1) brightness(0.4); 
+        }
+        
+        .wigle-frame:hover img { 
+            filter: grayscale(0) brightness(0.9); 
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>PELLARHODON</h1>
+    </header>
+
+    <footer class="footer">
+        <!-- D&D CAMPAIGN BUTTON -->
+        <a href="dnd.html" class="interactive-node dnd-node-btn">
+            <svg class="mjolnir-btn-icon" viewBox="0 0 100 100">
+                <path d="M50 20 L50 62" stroke-width="5"/>
+                <path d="M46 22 H54 M46 30 H54 M46 38 H54 M46 46 H54" stroke-width="3"/>
+                <path d="M22 62 L78 62 L85 75 L75 90 L25 90 L15 75 Z" stroke-width="3"/>
+                <circle cx="50" cy="76" r="4" fill="#cc0000"/>
+                <path d="M42 16 C 42 8, 58 8, 58 16 Z" stroke-width="3"/>
+            </svg>
+            <span>[ CAMPAIGN // FOLDJORD ]</span>
+        </a>
+
+        <!-- R6 OVERLAY -->
+        <div class="interactive-node r6-overlay-wrapper">
+            <iframe 
+                src="https://tracker.gg/overlays/overlay/f589ebda-3d70-4814-9afb-f419744426f2" 
+                class="r6-tracker-frame" 
+                title="Rainbow Six Siege Tracker Overlay">
+            </iframe>
+        </div>
+
+        <!-- KO-FI BUTTON -->
+        <a href="
