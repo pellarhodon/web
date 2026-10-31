@@ -367,21 +367,48 @@
         }
 
         // 4. GITHUB COMMITY
-        async function fetchGit() {
-            try {
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
-                if (!res.ok) throw new Error("Git API limit or error");
-                const data = await res.json();
-                const date = new Date(data[0].commit.author.date);
-                const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-                const msg = data[0].commit.message.toUpperCase().substring(0, 15) + "...";
-                
-                if (gitDateEl) gitDateEl.textContent = formattedDate;
-                if (gitMsgEl) gitMsgEl.textContent = msg;
-            } catch (e) {
-                if (gitDateEl) gitDateEl.textContent = "SYNC_WAIT";
+        // 2. GITHUB FETCH (S ODOLNÝM CACHE)
+async function fetchGit() {
+    const cachedDate = localStorage.getItem('git_last_date');
+    const cachedMsg = localStorage.getItem('git_last_msg');
+
+    // Pokud máme uložená data v prohlížeči, hned je zobrazíme
+    if (cachedDate && cachedMsg) {
+        if (gitDateEl) gitDateEl.textContent = cachedDate;
+        if (gitMsgEl) gitMsgEl.textContent = cachedMsg;
+    }
+
+    try {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
+        
+        if (!res.ok) {
+            // Pokud API vrátí chybu (403/429), použijeme záložní text pouze pokud nemáme cache
+            if (!cachedDate) {
+                if (gitDateEl) gitDateEl.textContent = "21.1.2026";
+                if (gitMsgEl) gitMsgEl.textContent = "SYS_INIT";
             }
+            return;
         }
+
+        const data = await res.json();
+        const date = new Date(data[0].commit.author.date);
+        const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+        const msg = data[0].commit.message.toUpperCase().substring(0, 15) + "...";
+
+        // Uložíme do paměti pro další načtení
+        localStorage.setItem('git_last_date', formattedDate);
+        localStorage.setItem('git_last_msg', msg);
+
+        if (gitDateEl) gitDateEl.textContent = formattedDate;
+        if (gitMsgEl) gitMsgEl.textContent = msg;
+
+    } catch (e) {
+        if (!cachedDate) {
+            if (gitDateEl) gitDateEl.textContent = "21.1.2026";
+            if (gitMsgEl) gitMsgEl.textContent = "SYS_INIT";
+        }
+    }
+}
 
         // 5. POČÍTADLO NÁVŠTĚV
         async function updateVisits() {
