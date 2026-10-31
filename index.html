@@ -305,14 +305,15 @@
         </a>
     </footer>
 
-    <script>
+  <script>
         // CONFIG
         const GITHUB_USER = "pellarhodon";
         const REPO = "pellarhodon.github.io";
         const DISCORD_ID = "583764327459192872";
-        const START_DATE = new Date(2026, 0, 21).getTime();
+        // Nastaveno spolehlivé datum spuštění (21. 1. 2026)
+        const START_DATE = new Date("2026-01-21T00:00:00").getTime();
 
-        // DOM elements cache
+        // DOM Elements
         const binaryClockEl = document.getElementById('binary-clock');
         const gitDateEl = document.getElementById('git-date');
         const gitMsgEl = document.getElementById('git-msg');
@@ -321,13 +322,88 @@
         const trackArtistEl = document.getElementById('track-artist');
         const uptimeEl = document.getElementById('uptime');
 
-        // 1. BINARY CLOCK
+        // 1. BINÁRNÍ HODINY
         function updateBinaryClock() {
-            const now = new Date();
-            const h = now.getHours().toString(2).padStart(6, '0');
-            const m = now.getMinutes().toString(2).padStart(6, '0');
-            const s = now.getSeconds().toString(2).padStart(6, '0');
-            binaryClockEl.textContent = h + m + s;
+            try {
+                const now = new Date();
+                const h = now.getHours().toString(2).padStart(6, '0');
+                const m = now.getMinutes().toString(2).padStart(6, '0');
+                const s = now.getSeconds().toString(2).padStart(6, '0');
+                if (binaryClockEl) binaryClockEl.textContent = h + m + s;
+            } catch (e) { console.error("Clock error:", e); }
         }
 
-        // 2
+        // 2. UPTIME POČÍTADLO
+        function updateUptime() {
+            try {
+                const now = Date.now();
+                const diff = Math.max(0, now - START_DATE);
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / (1000 * 60)) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+                if (uptimeEl) uptimeEl.textContent = `${d}D_${h}H_${m}M_${s}S`;
+            } catch (e) { console.error("Uptime error:", e); }
+        }
+
+        // 3. SPOTIFY / LANYARD
+        async function fetchLanyard() {
+            try {
+                const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                if (!res.ok) throw new Error("Lanyard response not OK");
+                const json = await res.json();
+                
+                if (json.success && json.data && json.data.listening_to_spotify && json.data.spotify) {
+                    if (trackNameEl) trackNameEl.textContent = json.data.spotify.song.toUpperCase();
+                    if (trackArtistEl) trackArtistEl.textContent = json.data.spotify.artist.toUpperCase();
+                } else {
+                    if (trackNameEl) trackNameEl.textContent = "STATION_IDLE";
+                    if (trackArtistEl) trackArtistEl.textContent = "NO_AUDIO_FEED";
+                }
+            } catch (e) {
+                if (trackNameEl) trackNameEl.textContent = "SIGNAL_LOST";
+                if (trackArtistEl) trackArtistEl.textContent = "OFFLINE";
+            }
+        }
+
+        // 4. GITHUB COMMITY
+        async function fetchGit() {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/commits`);
+                if (!res.ok) throw new Error("Git API limit or error");
+                const data = await res.json();
+                const date = new Date(data[0].commit.author.date);
+                const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+                const msg = data[0].commit.message.toUpperCase().substring(0, 15) + "...";
+                
+                if (gitDateEl) gitDateEl.textContent = formattedDate;
+                if (gitMsgEl) gitMsgEl.textContent = msg;
+            } catch (e) {
+                if (gitDateEl) gitDateEl.textContent = "SYNC_WAIT";
+            }
+        }
+
+        // 5. POČÍTADLO NÁVŠTĚV
+        async function updateVisits() {
+            try {
+                const res = await fetch(`https://api.counterapi.com/v1/pellarhodon_github_io/visits/up`);
+                if (!res.ok) throw new Error("CounterAPI error");
+                const data = await res.json();
+                if (visitsEl) visitsEl.textContent = data.count.toLocaleString();
+            } catch (e) {
+                if (visitsEl) visitsEl.textContent = "1,024"; // Záložní hodnota při výpadku API
+            }
+        }
+
+        // SPUŠTĚNÍ SMYČEK
+        setInterval(updateBinaryClock, 1000);
+        setInterval(updateUptime, 1000);
+        setInterval(fetchLanyard, 5000);
+
+        // INICIALIZACE PO NAČTENÍ
+        updateBinaryClock();
+        updateUptime();
+        fetchLanyard();
+        fetchGit();
+        updateVisits();
+    </script>
